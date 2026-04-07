@@ -29,6 +29,15 @@ export interface Translation {
   providerSectionTitle: string;
   appearanceSectionTitle: string;
   customOption: string;
+  languageEnglish: string;
+  languageKorean: string;
+  languageChinese: string;
+  languageJapanese: string;
+  customBaseUrlPlaceholder: string;
+  customModelPlaceholder: string;
+  defaultPhaseLabel: string;
+  providerHelp: string;
+  modelHelp: string;
   sampleFacts: string;
 }
 
@@ -62,6 +71,15 @@ export const translations: Record<Language, Translation> = {
     providerSectionTitle: "Model Setup",
     appearanceSectionTitle: "Diagram View",
     customOption: "Custom",
+    languageEnglish: "English",
+    languageKorean: "Korean",
+    languageChinese: "Chinese",
+    languageJapanese: "Japanese",
+    customBaseUrlPlaceholder: "Enter the full chat completions endpoint",
+    customModelPlaceholder: "Enter the exact model id",
+    defaultPhaseLabel: "Phase",
+    providerHelp: "Pick a preset provider or enter a custom endpoint.",
+    modelHelp: "Choose a preset model or type the exact model id.",
     sampleFacts:
       "On March 1, 2024, A lent KRW 100 million to B as business funds.\nOn the same day, B gave A a promissory note promising repayment by June 30, 2024.\nLater, on March 20, 2024, B gifted KRW 50 million from that money to B's sibling C.\nOn July 5, 2024, after B failed to repay, A began reviewing whether an action to revoke a fraudulent transfer against C was possible."
   },
@@ -94,6 +112,15 @@ export const translations: Record<Language, Translation> = {
     providerSectionTitle: "모델 설정",
     appearanceSectionTitle: "관계도 보기",
     customOption: "직접 입력",
+    languageEnglish: "영어",
+    languageKorean: "한국어",
+    languageChinese: "중국어",
+    languageJapanese: "일본어",
+    customBaseUrlPlaceholder: "전체 chat completions 엔드포인트를 입력하세요",
+    customModelPlaceholder: "정확한 모델 id를 입력하세요",
+    defaultPhaseLabel: "단계",
+    providerHelp: "프리셋 제공자를 선택하거나 사용자 지정 엔드포인트를 입력하세요.",
+    modelHelp: "프리셋 모델을 선택하거나 정확한 모델 id를 입력하세요.",
     sampleFacts:
       "2024년 3월 1일 A는 B에게 사업자금 명목으로 1억 원을 빌려주었다.\n같은 날 B는 A에게 2024년 6월 30일까지 변제하겠다는 차용증을 작성해 주었다.\n이후 2024년 3월 20일 B는 위 금원 중 5천만 원을 자신의 동생 C에게 증여하였다.\n2024년 7월 5일 B가 변제를 하지 않자, A는 C를 상대로 사해행위 취소 가능성을 검토하게 되었다."
   },
@@ -126,6 +153,15 @@ export const translations: Record<Language, Translation> = {
     providerSectionTitle: "模型设置",
     appearanceSectionTitle: "关系图视图",
     customOption: "自定义",
+    languageEnglish: "英语",
+    languageKorean: "韩语",
+    languageChinese: "中文",
+    languageJapanese: "日语",
+    customBaseUrlPlaceholder: "请输入完整的 chat completions 端点",
+    customModelPlaceholder: "请输入准确的模型 id",
+    defaultPhaseLabel: "阶段",
+    providerHelp: "可选择预设提供方，或输入自定义端点。",
+    modelHelp: "可选择预设模型，或输入准确的模型 id。",
     sampleFacts:
       "2024年3月1日，A以经营资金名义借给B一亿韩元。\n同日，B向A出具借据，承诺于2024年6月30日前偿还。\n此后在2024年3月20日，B将其中五千万韩元赠与其弟弟C。\n2024年7月5日，B未按期偿还，A开始审查是否可以对C提起撤销诈害行为之诉。"
   },
@@ -158,6 +194,15 @@ export const translations: Record<Language, Translation> = {
     providerSectionTitle: "モデル設定",
     appearanceSectionTitle: "関係図表示",
     customOption: "カスタム",
+    languageEnglish: "英語",
+    languageKorean: "韓国語",
+    languageChinese: "中国語",
+    languageJapanese: "日本語",
+    customBaseUrlPlaceholder: "完全な chat completions エンドポイントを入力してください",
+    customModelPlaceholder: "正確なモデル id を入力してください",
+    defaultPhaseLabel: "フェーズ",
+    providerHelp: "プリセットのプロバイダーを選ぶか、独自エンドポイントを入力してください。",
+    modelHelp: "プリセットのモデルを選ぶか、正確なモデル id を入力してください。",
     sampleFacts:
       "2024年3月1日、Aは事業資金名目でBに1億ウォンを貸し付けた。\n同日、BはAに対し、2024年6月30日までに返済する旨の借用証を書いた。\nその後、2024年3月20日にBはそのうち5千万ウォンを弟Cに贈与した。\n2024年7月5日、Bが返済しなかったため、AはCに対する詐害行為取消しの可能性を検討することになった。"
   }

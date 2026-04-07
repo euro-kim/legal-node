@@ -28,7 +28,7 @@ function detectModel(providerId: string, model: string) {
     return CUSTOM_MODEL_ID;
   }
 
-  return provider.models.includes(model) ? model : CUSTOM_MODEL_ID;
+  return provider.models.some((option) => option.id === model) ? model : CUSTOM_MODEL_ID;
 }
 
 export default function App() {
@@ -76,9 +76,9 @@ export default function App() {
     setConfig((current) => ({
       ...current,
       baseUrl: provider.baseUrl,
-      model: provider.models[0] ?? current.model
+      model: provider.models[0]?.id ?? current.model
     }));
-    setModelChoice(provider.models[0] ?? CUSTOM_MODEL_ID);
+    setModelChoice(provider.models[0]?.id ?? CUSTOM_MODEL_ID);
   };
 
   const handleModelChange = (nextModel: string) => {
@@ -118,6 +118,7 @@ export default function App() {
           <div className="section-heading compact">
             <h2>{copy.providerSectionTitle}</h2>
           </div>
+          <p className="helper-text">{copy.providerHelp}</p>
 
           <div className="config-grid">
             <label>
@@ -126,10 +127,10 @@ export default function App() {
                 value={config.language}
                 onChange={(event) => handleLanguageChange(event.target.value as Language)}
               >
-                <option value="en">English</option>
-                <option value="ko">Korean</option>
-                <option value="zh">Chinese</option>
-                <option value="ja">Japanese</option>
+                <option value="en">{copy.languageEnglish}</option>
+                <option value="ko">{copy.languageKorean}</option>
+                <option value="zh">{copy.languageChinese}</option>
+                <option value="ja">{copy.languageJapanese}</option>
               </select>
             </label>
 
@@ -138,7 +139,7 @@ export default function App() {
               <select value={providerId} onChange={(event) => handleProviderChange(event.target.value)}>
                 {providerOptions.map((provider) => (
                   <option key={provider.id} value={provider.id}>
-                    {provider.label}
+                    {provider.labels[config.language]}
                   </option>
                 ))}
                 <option value={CUSTOM_PROVIDER_ID}>{copy.customOption}</option>
@@ -164,7 +165,7 @@ export default function App() {
                 onChange={(event) =>
                   setConfig((current) => ({ ...current, baseUrl: event.target.value }))
                 }
-                placeholder="https://api.openai.com/v1/chat/completions"
+                placeholder={copy.customBaseUrlPlaceholder}
               />
             </label>
 
@@ -172,8 +173,8 @@ export default function App() {
               {copy.modelLabel}
               <select value={modelChoice} onChange={(event) => handleModelChange(event.target.value)}>
                 {selectedProvider?.models.map((model) => (
-                  <option key={model} value={model}>
-                    {model}
+                  <option key={model.id} value={model.id}>
+                    {model.label}
                   </option>
                 ))}
                 <option value={CUSTOM_MODEL_ID}>{copy.customOption}</option>
@@ -187,11 +188,12 @@ export default function App() {
                 onChange={(event) =>
                   setConfig((current) => ({ ...current, model: event.target.value }))
                 }
-                placeholder="gpt-4.1-mini"
+                placeholder={copy.customModelPlaceholder}
                 disabled={modelChoice !== CUSTOM_MODEL_ID}
               />
             </label>
           </div>
+          <p className="helper-text">{copy.modelHelp}</p>
         </div>
 
         <label className="fact-input">
@@ -247,7 +249,8 @@ export default function App() {
 
         <div className="phase-strip">
           {result?.phases.map((phase, index) => {
-            const label = phase.step_name || phase.timestamp || `Phase ${index + 1}`;
+            const label =
+              phase.step_name || phase.timestamp || `${copy.defaultPhaseLabel} ${index + 1}`;
             return (
               <button
                 type="button"
