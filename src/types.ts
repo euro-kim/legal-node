@@ -1,3 +1,5 @@
+import type { Language } from "./i18n";
+
 export type EntityType = "Person" | "Company" | "Object" | "Organization" | "Other";
 
 export interface Entity {
@@ -29,4 +31,5 @@ export interface LlmConfig {
   apiKey: string;
   baseUrl: string;
   model: string;
+  language: Language;
 }
