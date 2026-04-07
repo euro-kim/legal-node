@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { defaultConfig } from "./config";
-import { translations, type Language } from "./i18n";
+import { localizeEntityType, translations, type Language } from "./i18n";
 import { CUSTOM_MODEL_ID, CUSTOM_PROVIDER_ID, getProviderById, providerOptions } from "./llmOptions";
 import { MermaidDiagram } from "./components/MermaidDiagram";
 import { generateLegalMap } from "./lib/legalMapClient";
 import type { LegalMapResult, LlmConfig } from "./types";
 
 type TimeMode = "single" | "cumulative";
+type ThemeMode = "light" | "dark";
 
 function normalizeConfig(input: LlmConfig): LlmConfig {
   return {
@@ -33,6 +34,7 @@ function detectModel(providerId: string, model: string) {
 
 export default function App() {
   const [config, setConfig] = useState<LlmConfig>(defaultConfig);
+  const [themeMode, setThemeMode] = useState<ThemeMode>("light");
   const [providerId, setProviderId] = useState(() => detectProvider(defaultConfig.baseUrl));
   const [modelChoice, setModelChoice] = useState(() =>
     detectModel(detectProvider(defaultConfig.baseUrl), defaultConfig.model)
@@ -55,6 +57,10 @@ export default function App() {
       return previousSamples.includes(current) ? copy.sampleFacts : current;
     });
   }, [copy.sampleFacts]);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = themeMode;
+  }, [themeMode]);
 
   const handleLanguageChange = (language: Language) => {
     setConfig((current) => ({ ...current, language }));
@@ -110,8 +116,68 @@ export default function App() {
     <main className="app-shell">
       <section className="panel input-panel">
         <div className="section-heading">
-          <p className="eyebrow">{copy.appEyebrow}</p>
-          <h1>{copy.appTitle}</h1>
+          <div className="title-row">
+            <div>
+              <p className="eyebrow">{copy.appEyebrow}</p>
+              <h1>{copy.appTitle}</h1>
+            </div>
+
+            <div className="settings-strip" aria-label="interface settings">
+              <div className="settings-group">
+                <span className="settings-label">{copy.languageSettingsLabel}</span>
+                <div className="chip-group">
+                  <button
+                    type="button"
+                    className={config.language === "en" ? "chip-button active" : "chip-button"}
+                    onClick={() => handleLanguageChange("en")}
+                  >
+                    {copy.languageEnglish}
+                  </button>
+                  <button
+                    type="button"
+                    className={config.language === "ko" ? "chip-button active" : "chip-button"}
+                    onClick={() => handleLanguageChange("ko")}
+                  >
+                    {copy.languageKorean}
+                  </button>
+                  <button
+                    type="button"
+                    className={config.language === "zh" ? "chip-button active" : "chip-button"}
+                    onClick={() => handleLanguageChange("zh")}
+                  >
+                    {copy.languageChinese}
+                  </button>
+                  <button
+                    type="button"
+                    className={config.language === "ja" ? "chip-button active" : "chip-button"}
+                    onClick={() => handleLanguageChange("ja")}
+                  >
+                    {copy.languageJapanese}
+                  </button>
+                </div>
+              </div>
+
+              <div className="settings-group">
+                <span className="settings-label">{copy.themeLabel}</span>
+                <div className="chip-group">
+                  <button
+                    type="button"
+                    className={themeMode === "light" ? "chip-button active" : "chip-button"}
+                    onClick={() => setThemeMode("light")}
+                  >
+                    {copy.lightMode}
+                  </button>
+                  <button
+                    type="button"
+                    className={themeMode === "dark" ? "chip-button active" : "chip-button"}
+                    onClick={() => setThemeMode("dark")}
+                  >
+                    {copy.darkMode}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="control-cluster">
@@ -121,19 +187,6 @@ export default function App() {
           <p className="helper-text">{copy.providerHelp}</p>
 
           <div className="config-grid">
-            <label>
-              {copy.languageLabel}
-              <select
-                value={config.language}
-                onChange={(event) => handleLanguageChange(event.target.value as Language)}
-              >
-                <option value="en">{copy.languageEnglish}</option>
-                <option value="ko">{copy.languageKorean}</option>
-                <option value="zh">{copy.languageChinese}</option>
-                <option value="ja">{copy.languageJapanese}</option>
-              </select>
-            </label>
-
             <label>
               {copy.providerLabel}
               <select value={providerId} onChange={(event) => handleProviderChange(event.target.value)}>
@@ -281,7 +334,7 @@ export default function App() {
             <ul>
               {entitiesSummary.map((entity) => (
                 <li key={entity.id}>
-                  {entity.id} · {entity.name} ({entity.type})
+                  {entity.id} · {entity.name} ({localizeEntityType(entity.type, config.language)})
                 </li>
               ))}
             </ul>

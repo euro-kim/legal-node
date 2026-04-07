@@ -1,6 +1,6 @@
 import { useEffect, useId, useState } from "react";
 import mermaid from "mermaid";
-import { translations, type Language } from "../i18n";
+import { localizeEntityType, localizeLegalBasis, translations, type Language } from "../i18n";
 import type { Entity, EntityType, LegalMapResult, Phase } from "../types";
 
 mermaid.initialize({
@@ -123,7 +123,7 @@ function buildDiagram(
   let edgeCount = 0;
 
   for (const entity of data.entities) {
-    const label = escapeLabel(`${entity.name}\\n(${entity.type})`);
+    const label = escapeLabel(`${entity.name}\\n(${localizeEntityType(entity.type, language)})`);
     const colors = colorFromId(entity.id);
     lines.push(`  ${entityNode(entity, label)}`);
     lines.push(`  style ${entity.id} fill:${colors.fill},stroke:${colors.stroke},stroke-width:3px,color:#111827;`);
@@ -141,7 +141,9 @@ function buildDiagram(
       const edgeLabel = [
         interaction.action,
         interaction.object ? `${copy.objectLabel}: ${interaction.object}` : "",
-        interaction.legal_basis ? `${copy.legalBasisLabel}: ${interaction.legal_basis}` : ""
+        interaction.legal_basis
+          ? `${copy.legalBasisLabel}: ${localizeLegalBasis(interaction.legal_basis, language)}`
+          : ""
       ]
         .filter(Boolean)
         .join("<br/>");
