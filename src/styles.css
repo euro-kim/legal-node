@@ -14,7 +14,7 @@
     radial-gradient(circle at top left, rgba(194, 230, 255, 0.7), transparent 28%),
     radial-gradient(circle at bottom right, rgba(255, 232, 209, 0.85), transparent 24%),
     linear-gradient(135deg, #f7f5ef 0%, #eef4fb 100%);
-  --panel-bg: rgba(255, 255, 255, 0.84);
+  --panel-bg: rgba(255, 255, 255, 0.86);
   --panel-border: rgba(23, 32, 51, 0.08);
   --panel-shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
   --accent: #1d4ed8;
@@ -27,6 +27,7 @@
   --input-disabled: #f3f4f6;
   --surface-soft: #f8fafc;
   --surface-warm: #fffdf8;
+  --surface-elevated: rgba(255, 255, 255, 0.72);
   --segmented-bg: rgba(226, 232, 240, 0.82);
   --segmented-text: #405066;
   --segmented-active-bg: #172033;
@@ -38,6 +39,9 @@
   --json-text: #e5e7eb;
   --error-bg: #fee2e2;
   --error-text: #991b1b;
+  --secondary-button-bg: rgba(255, 255, 255, 0.8);
+  --secondary-button-border: rgba(23, 32, 51, 0.12);
+  --dialog-backdrop: rgba(15, 23, 42, 0.6);
 }
 
 :root[data-theme="dark"] {
@@ -50,7 +54,7 @@
     radial-gradient(circle at top left, rgba(29, 78, 216, 0.16), transparent 28%),
     radial-gradient(circle at bottom right, rgba(15, 118, 110, 0.16), transparent 24%),
     linear-gradient(135deg, #0b1220 0%, #111827 100%);
-  --panel-bg: rgba(15, 23, 42, 0.74);
+  --panel-bg: rgba(15, 23, 42, 0.76);
   --panel-border: rgba(148, 163, 184, 0.16);
   --panel-shadow: 0 24px 60px rgba(2, 6, 23, 0.36);
   --text-main: #e5eef9;
@@ -61,6 +65,7 @@
   --input-disabled: rgba(51, 65, 85, 0.7);
   --surface-soft: rgba(15, 23, 42, 0.9);
   --surface-warm: rgba(15, 23, 42, 0.78);
+  --surface-elevated: rgba(15, 23, 42, 0.7);
   --segmented-bg: rgba(30, 41, 59, 0.86);
   --segmented-text: #cbd5e1;
   --segmented-active-bg: #eff6ff;
@@ -72,6 +77,9 @@
   --json-text: #dbeafe;
   --error-bg: rgba(127, 29, 29, 0.32);
   --error-text: #fecaca;
+  --secondary-button-bg: rgba(15, 23, 42, 0.82);
+  --secondary-button-border: rgba(148, 163, 184, 0.22);
+  --dialog-backdrop: rgba(2, 6, 23, 0.76);
 }
 
 * {
@@ -131,8 +139,10 @@ textarea {
 }
 
 .app-shell {
+  width: min(1440px, 100%);
+  margin: 0 auto;
   display: grid;
-  grid-template-columns: minmax(340px, 430px) 1fr;
+  grid-template-columns: minmax(360px, 430px) minmax(0, 1fr);
   gap: 24px;
   padding: 24px;
   align-items: start;
@@ -140,18 +150,18 @@ textarea {
 
 .panel {
   border: 1px solid var(--panel-border);
-  border-radius: 24px;
+  border-radius: 28px;
   background: var(--panel-bg);
   box-shadow: var(--panel-shadow);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(14px);
 }
 
-.input-panel {
+.input-panel,
+.output-panel {
   padding: 24px;
 }
 
 .output-panel {
-  padding: 24px;
   display: grid;
   gap: 20px;
   align-content: start;
@@ -165,7 +175,18 @@ textarea {
 
 .title-row {
   display: grid;
-  gap: 16px;
+  gap: 18px;
+}
+
+.hero-copy {
+  margin: 10px 0 0;
+  max-width: 54ch;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.hero-copy.compact {
+  max-width: 64ch;
 }
 
 .section-heading.compact h2 {
@@ -187,17 +208,24 @@ textarea {
   color: #b45309;
 }
 
+.settings-strip,
+.control-cluster,
+.diagram-panel {
+  border: 1px solid var(--panel-border);
+}
+
 .settings-strip {
   display: grid;
   gap: 12px;
   padding: 14px;
-  border-radius: 18px;
+  border-radius: 20px;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.65), rgba(244, 248, 252, 0.78));
-  border: 1px solid var(--panel-border);
 }
 
 :root[data-theme="dark"] .settings-strip,
-:root[data-theme="dark"] .control-cluster {
+:root[data-theme="dark"] .control-cluster,
+:root[data-theme="dark"] .diagram-panel,
+:root[data-theme="dark"] .phase-meta {
   background: linear-gradient(180deg, rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.88));
 }
 
@@ -226,7 +254,8 @@ textarea {
 
 .chip-button,
 .segmented button,
-.phase-chip {
+.phase-chip,
+.secondary-button {
   border: 0;
   border-radius: 999px;
   padding: 10px 14px;
@@ -239,7 +268,8 @@ textarea {
 .chip-button:hover,
 .actions button:hover,
 .segmented button:hover,
-.phase-chip:hover {
+.phase-chip:hover,
+.secondary-button:hover {
   transform: translateY(-1px);
 }
 
@@ -252,10 +282,9 @@ textarea {
 
 .control-cluster {
   margin-top: 20px;
-  padding: 18px;
-  border-radius: 20px;
+  padding: 20px;
+  border-radius: 24px;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(244, 248, 252, 0.94));
-  border: 1px solid var(--panel-border);
 }
 
 .config-grid {
@@ -279,7 +308,7 @@ textarea {
 }
 
 .fact-input {
-  margin-top: 16px;
+  margin-top: 18px;
 }
 
 .actions {
@@ -298,16 +327,23 @@ textarea {
   transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
-.actions button:disabled {
-  opacity: 0.62;
-  cursor: wait;
+.actions button:disabled,
+.secondary-button:disabled {
+  opacity: 0.56;
+  cursor: not-allowed;
+}
+
+.secondary-button {
+  background: var(--secondary-button-bg);
+  border: 1px solid var(--secondary-button-border);
+  color: var(--text-main);
 }
 
 .toolbar {
   display: flex;
   justify-content: space-between;
   gap: 16px;
-  align-items: center;
+  align-items: start;
 }
 
 .phase-strip {
@@ -316,21 +352,50 @@ textarea {
   gap: 10px;
 }
 
+.diagram-panel,
 .diagram-shell,
 .empty-state,
 .json-preview pre,
 .error-panel,
-.phase-meta {
-  border-radius: 20px;
+.phase-meta,
+.dialog-panel {
+  border-radius: 24px;
+}
+
+.diagram-panel {
+  padding: 16px;
+  background: var(--surface-elevated);
+}
+
+.diagram-actions,
+.dialog-toolbar,
+.dialog-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.diagram-actions {
+  justify-content: flex-end;
+  margin-bottom: 12px;
+}
+
+.dialog-toolbar {
+  justify-content: space-between;
+  margin-bottom: 14px;
 }
 
 .diagram-shell,
 .empty-state {
-  min-height: 520px;
+  min-height: 560px;
   padding: 20px;
   background: var(--diagram-bg);
   border: 1px solid var(--panel-border);
   overflow: auto;
+}
+
+.diagram-shell.expanded {
+  min-height: min(78vh, 920px);
 }
 
 .diagram-shell svg {
@@ -386,7 +451,28 @@ textarea {
   padding-left: 18px;
 }
 
-@media (max-width: 1120px) {
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: var(--dialog-backdrop);
+}
+
+.dialog-panel {
+  width: min(1320px, 100%);
+  max-height: calc(100vh - 40px);
+  padding: 18px;
+  overflow: auto;
+  border: 1px solid var(--panel-border);
+  background: var(--panel-bg);
+  box-shadow: var(--panel-shadow);
+  backdrop-filter: blur(16px);
+}
+
+@media (max-width: 1180px) {
   .app-shell {
     grid-template-columns: 1fr;
   }
@@ -394,12 +480,13 @@ textarea {
 
 @media (max-width: 720px) {
   .app-shell {
-    padding: 16px;
+    padding: 12px;
+    gap: 16px;
   }
 
   .input-panel,
   .output-panel {
-    padding: 18px;
+    padding: 16px;
   }
 
   .config-grid,
@@ -407,7 +494,73 @@ textarea {
     grid-template-columns: 1fr;
   }
 
-  .toolbar {
+  .toolbar,
+  .diagram-actions,
+  .dialog-toolbar,
+  .dialog-actions {
     display: grid;
+  }
+
+  .chip-group,
+  .segmented {
+    border-radius: 20px;
+  }
+
+  .chip-button,
+  .segmented button,
+  .phase-chip,
+  .secondary-button,
+  .actions button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .diagram-shell,
+  .empty-state {
+    min-height: 420px;
+    padding: 14px;
+  }
+
+  .dialog-backdrop {
+    padding: 10px;
+  }
+
+  .dialog-panel {
+    max-height: calc(100vh - 20px);
+    padding: 14px;
+  }
+}
+
+@media print {
+  body {
+    background: #ffffff;
+  }
+
+  .app-shell {
+    display: block;
+    padding: 0;
+  }
+
+  .input-panel,
+  .settings-strip,
+  .control-cluster,
+  .fact-input,
+  .actions,
+  .json-preview,
+  .phase-strip,
+  .toolbar,
+  .phase-meta,
+  .diagram-actions {
+    display: none !important;
+  }
+
+  .output-panel,
+  .diagram-panel,
+  .diagram-shell {
+    border: 0;
+    box-shadow: none;
+    background: #ffffff;
+    padding: 0;
+    min-height: 0;
   }
 }

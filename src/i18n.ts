@@ -42,6 +42,12 @@ export interface Translation {
   lightMode: string;
   darkMode: string;
   languageSettingsLabel: string;
+  appSubtitle: string;
+  outputSubtitle: string;
+  enlargeMap: string;
+  closePreview: string;
+  printMap: string;
+  mapActionsLabel: string;
   sampleFacts: string;
 }
 
@@ -88,6 +94,12 @@ export const translations: Record<Language, Translation> = {
     lightMode: "Light",
     darkMode: "Dark",
     languageSettingsLabel: "Language",
+    appSubtitle: "Structure legal facts into a cleaner timeline and relationship map for fast case review.",
+    outputSubtitle: "Review the active relationship map, expand it for presentation, or print it directly.",
+    enlargeMap: "Enlarge Map",
+    closePreview: "Close",
+    printMap: "Print Map",
+    mapActionsLabel: "Map Actions",
     sampleFacts:
       "On March 1, 2024, A lent KRW 100 million to B as business funds.\nOn the same day, B gave A a promissory note promising repayment by June 30, 2024.\nLater, on March 20, 2024, B gifted KRW 50 million from that money to B's sibling C.\nOn July 5, 2024, after B failed to repay, A began reviewing whether an action to revoke a fraudulent transfer against C was possible."
   },
@@ -133,6 +145,12 @@ export const translations: Record<Language, Translation> = {
     lightMode: "라이트",
     darkMode: "다크",
     languageSettingsLabel: "언어",
+    appSubtitle: "법률 사실관계를 시간 흐름과 관계도로 구조화해 빠르게 검토할 수 있습니다.",
+    outputSubtitle: "현재 관계도를 검토하고, 크게 보기로 확장하거나 바로 인쇄할 수 있습니다.",
+    enlargeMap: "관계도 확대",
+    closePreview: "닫기",
+    printMap: "관계도 인쇄",
+    mapActionsLabel: "관계도 작업",
     sampleFacts:
       "2024년 3월 1일 A는 B에게 사업자금 명목으로 1억 원을 빌려주었다.\n같은 날 B는 A에게 2024년 6월 30일까지 변제하겠다는 차용증을 작성해 주었다.\n이후 2024년 3월 20일 B는 위 금원 중 5천만 원을 자신의 동생 C에게 증여하였다.\n2024년 7월 5일 B가 변제를 하지 않자, A는 C를 상대로 사해행위 취소 가능성을 검토하게 되었다."
   },
@@ -178,6 +196,12 @@ export const translations: Record<Language, Translation> = {
     lightMode: "浅色",
     darkMode: "深色",
     languageSettingsLabel: "语言",
+    appSubtitle: "将法律事实整理为更清晰的时间线和关系图，便于快速审阅案件。",
+    outputSubtitle: "查看当前关系图，可放大展示，也可直接打印。",
+    enlargeMap: "放大关系图",
+    closePreview: "关闭",
+    printMap: "打印关系图",
+    mapActionsLabel: "关系图操作",
     sampleFacts:
       "2024年3月1日，A以经营资金名义借给B一亿韩元。\n同日，B向A出具借据，承诺于2024年6月30日前偿还。\n此后在2024年3月20日，B将其中五千万韩元赠与其弟弟C。\n2024年7月5日，B未按期偿还，A开始审查是否可以对C提起撤销诈害行为之诉。"
   },
@@ -223,6 +247,12 @@ export const translations: Record<Language, Translation> = {
     lightMode: "ライト",
     darkMode: "ダーク",
     languageSettingsLabel: "言語",
+    appSubtitle: "法律上の事実関係を時系列と関係図に整理し、案件レビューを素早く行えます。",
+    outputSubtitle: "現在の関係図を確認し、拡大表示や印刷をすぐに行えます。",
+    enlargeMap: "関係図を拡大",
+    closePreview: "閉じる",
+    printMap: "関係図を印刷",
+    mapActionsLabel: "関係図アクション",
     sampleFacts:
       "2024年3月1日、Aは事業資金名目でBに1億ウォンを貸し付けた。\n同日、BはAに対し、2024年6月30日までに返済する旨の借用証を書いた。\nその後、2024年3月20日にBはそのうち5千万ウォンを弟Cに贈与した。\n2024年7月5日、Bが返済しなかったため、AはCに対する詐害行為取消しの可能性を検討することになった。"
   }

@@ -120,6 +120,7 @@ export default function App() {
             <div>
               <p className="eyebrow">{copy.appEyebrow}</p>
               <h1>{copy.appTitle}</h1>
+              <p className="hero-copy">{copy.appSubtitle}</p>
             </div>
 
             <div className="settings-strip" aria-label="interface settings">
@@ -280,6 +281,7 @@ export default function App() {
           <div>
             <p className="eyebrow">{copy.timeStructureEyebrow}</p>
             <h2>{copy.diagramTitle}</h2>
+            <p className="hero-copy compact">{copy.outputSubtitle}</p>
           </div>
 
           <div className="segmented">

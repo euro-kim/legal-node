@@ -162,6 +162,7 @@ function buildDiagram(
 export function MermaidDiagram({ data, activePhaseIndex, mode, language }: MermaidDiagramProps) {
   const [svg, setSvg] = useState("");
   const [error, setError] = useState("");
+  const [isExpanded, setIsExpanded] = useState(false);
   const id = useId().replace(/:/g, "");
   const copy = translations[language];
 
@@ -195,5 +196,69 @@ export function MermaidDiagram({ data, activePhaseIndex, mode, language }: Merma
     return <div className="error-panel">{error}</div>;
   }
 
-  return <div className="diagram-shell" dangerouslySetInnerHTML={{ __html: svg }} />;
+  const handlePrint = () => {
+    if (!svg) {
+      return;
+    }
+
+    const printWindow = window.open("", "_blank", "noopener,noreferrer,width=1200,height=900");
+    if (!printWindow) {
+      return;
+    }
+
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>${copy.printMap}</title>
+          <style>
+            body { margin: 0; padding: 24px; font-family: Arial, sans-serif; background: #ffffff; }
+            .frame { border: 1px solid #d1d5db; border-radius: 20px; padding: 24px; }
+            svg { width: 100%; height: auto; }
+            @media print { body { padding: 0; } .frame { border: 0; padding: 0; } }
+          </style>
+        </head>
+        <body>
+          <div class="frame">${svg}</div>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+  };
+
+  return (
+    <>
+      <div className="diagram-panel">
+        <div className="diagram-actions" aria-label={copy.mapActionsLabel}>
+          <button type="button" className="secondary-button" onClick={() => setIsExpanded(true)} disabled={!svg}>
+            {copy.enlargeMap}
+          </button>
+          <button type="button" className="secondary-button" onClick={handlePrint} disabled={!svg}>
+            {copy.printMap}
+          </button>
+        </div>
+        <div className="diagram-shell" dangerouslySetInnerHTML={{ __html: svg }} />
+      </div>
+
+      {isExpanded ? (
+        <div className="dialog-backdrop" role="dialog" aria-modal="true" aria-label={copy.enlargeMap}>
+          <div className="dialog-panel">
+            <div className="dialog-toolbar">
+              <strong>{copy.enlargeMap}</strong>
+              <div className="dialog-actions">
+                <button type="button" className="secondary-button" onClick={handlePrint}>
+                  {copy.printMap}
+                </button>
+                <button type="button" className="secondary-button" onClick={() => setIsExpanded(false)}>
+                  {copy.closePreview}
+                </button>
+              </div>
+            </div>
+            <div className="diagram-shell expanded" dangerouslySetInnerHTML={{ __html: svg }} />
+          </div>
+        </div>
+      ) : null}
+    </>
+  );
 }
