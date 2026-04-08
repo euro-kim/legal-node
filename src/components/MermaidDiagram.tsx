@@ -163,6 +163,7 @@ export function MermaidDiagram({ data, activePhaseIndex, mode, language }: Merma
   const [svg, setSvg] = useState("");
   const [error, setError] = useState("");
   const [isExpanded, setIsExpanded] = useState(false);
+  const [zoomPercent, setZoomPercent] = useState(100);
   const id = useId().replace(/:/g, "");
   const copy = translations[language];
 
@@ -231,7 +232,15 @@ export function MermaidDiagram({ data, activePhaseIndex, mode, language }: Merma
     <>
       <div className="diagram-panel">
         <div className="diagram-actions" aria-label={copy.mapActionsLabel}>
-          <button type="button" className="secondary-button" onClick={() => setIsExpanded(true)} disabled={!svg}>
+          <button
+            type="button"
+            className="secondary-button"
+            onClick={() => {
+              setZoomPercent(100);
+              setIsExpanded(true);
+            }}
+            disabled={!svg}
+          >
             {copy.enlargeMap}
           </button>
           <button type="button" className="secondary-button" onClick={handlePrint} disabled={!svg}>
@@ -245,7 +254,23 @@ export function MermaidDiagram({ data, activePhaseIndex, mode, language }: Merma
         <div className="dialog-backdrop" role="dialog" aria-modal="true" aria-label={copy.enlargeMap}>
           <div className="dialog-panel">
             <div className="dialog-toolbar">
-              <strong>{copy.enlargeMap}</strong>
+              <div className="dialog-heading">
+                <strong>{copy.enlargeMap}</strong>
+                <label className="zoom-control">
+                  <span>{copy.zoomLabel}</span>
+                  <div className="zoom-control-row">
+                    <input
+                      type="range"
+                      min="0"
+                      max="200"
+                      step="10"
+                      value={zoomPercent}
+                      onChange={(event) => setZoomPercent(Number(event.target.value))}
+                    />
+                    <strong>{copy.zoomValue.replace("{value}", String(zoomPercent))}</strong>
+                  </div>
+                </label>
+              </div>
               <div className="dialog-actions">
                 <button type="button" className="secondary-button" onClick={handlePrint}>
                   {copy.printMap}
@@ -255,7 +280,17 @@ export function MermaidDiagram({ data, activePhaseIndex, mode, language }: Merma
                 </button>
               </div>
             </div>
-            <div className="diagram-shell expanded" dangerouslySetInnerHTML={{ __html: svg }} />
+            <div className="diagram-shell expanded">
+              <div
+                className="zoom-stage"
+                style={{
+                  width: `${Math.max(zoomPercent, 1)}%`,
+                  minWidth: zoomPercent === 0 ? "0%" : `${Math.max(zoomPercent, 1)}%`,
+                  opacity: zoomPercent === 0 ? 0 : 1
+                }}
+                dangerouslySetInnerHTML={{ __html: svg }}
+              />
+            </div>
           </div>
         </div>
       ) : null}

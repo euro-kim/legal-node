@@ -58,13 +58,8 @@ export const providerOptions: ProviderOption[] = [
     baseUrl: "https://factchat-cloud.mindlogic.ai/v1/gateway/chat/completions/",
     models: [
       { id: "claude-sonnet-4.6", label: "Claude Sonnet 4.6" },
-      { id: "claude-opus-4.6", label: "Claude Opus 4.6" },
       { id: "gpt-5.2", label: "GPT 5.2" },
-      { id: "gemini-3-flash", label: "Gemini 3 Flash" },
-      { id: "gemini-3-pro", label: "Gemini 3 Pro" },
-      { id: "gemini-3.1-pro", label: "Gemini 3.1 Pro" },
-      { id: "gpt-5.2-codex", label: "GPT 5.2 Codex" },
-      { id: "gpt-5.1-codex-max", label: "GPT 5.1 Codex Max" }
+      { id: "gemini-3.1-pro-preview", label: "Gemini 3.1 Pro Preview" }
     ]
   }
 ];

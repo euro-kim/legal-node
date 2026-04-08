@@ -88,6 +88,8 @@
 
 html {
   background: var(--page-bg);
+  min-height: 100%;
+  overscroll-behavior-y: none;
 }
 
 body {
@@ -96,6 +98,16 @@ body {
   min-height: 100vh;
   background: var(--page-bg);
   color: var(--text-main);
+  position: relative;
+  overscroll-behavior-y: none;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: var(--page-bg);
 }
 
 button,
@@ -385,6 +397,42 @@ textarea {
   margin-bottom: 14px;
 }
 
+.dialog-heading {
+  display: grid;
+  gap: 12px;
+  min-width: min(420px, 100%);
+}
+
+.zoom-control {
+  display: grid;
+  gap: 8px;
+  color: var(--text-soft);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.zoom-control-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.zoom-control input[type="range"] {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.zoom-stage {
+  transform-origin: top left;
+}
+
+.zoom-stage svg {
+  width: 100%;
+  height: auto;
+}
+
 .diagram-shell,
 .empty-state {
   min-height: 560px;
@@ -498,6 +546,12 @@ textarea {
   .diagram-actions,
   .dialog-toolbar,
   .dialog-actions {
+    display: grid;
+  }
+
+  .dialog-heading,
+  .zoom-control-row {
+    min-width: 0;
     display: grid;
   }
 

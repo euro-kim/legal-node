@@ -1,8 +1,8 @@
-# LegalMap
+# Legal Node
 
-LegalMap is a lightweight React + Vite app that turns legal fact patterns into a structured relationship map with timeline-based visualization.
+Legal Node is a lightweight React + Vite app that turns legal fact patterns into a structured relationship map with timeline-based visualization.
 
-LegalMap is designed for quick experimentation:
+Legal Node is designed for quick experimentation:
 - Paste legal facts
 - Choose an LLM provider and model
 - Generate structured JSON
@@ -48,7 +48,7 @@ The deployable output is generated in `dist/`.
 
 ### 소개
 
-LegalMap은 법률 사실관계를 구조화된 관계도로 변환하고, 시간 흐름에 따라 시각화하는 가벼운 React + Vite 앱입니다.
+Legal Node는 법률 사실관계를 구조화된 관계도로 변환하고, 시간 흐름에 따라 시각화하는 가벼운 React + Vite 앱입니다.
 
 빠르게 테스트할 수 있도록 다음 흐름에 맞춰 구성되어 있습니다.
 - 사실관계 입력

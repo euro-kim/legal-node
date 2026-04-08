@@ -48,13 +48,15 @@ export interface Translation {
   closePreview: string;
   printMap: string;
   mapActionsLabel: string;
+  zoomLabel: string;
+  zoomValue: string;
   sampleFacts: string;
 }
 
 export const translations: Record<Language, Translation> = {
   en: {
-    appEyebrow: "Legal Fact Parser",
-    appTitle: "Legal Relationship Map Builder",
+    appEyebrow: "Legal Relationship Intelligence",
+    appTitle: "Legal Node",
     providerLabel: "LLM provider",
     customProviderLabel: "Custom provider",
     apiKeyLabel: "API key",
@@ -100,12 +102,14 @@ export const translations: Record<Language, Translation> = {
     closePreview: "Close",
     printMap: "Print Map",
     mapActionsLabel: "Map Actions",
+    zoomLabel: "Zoom",
+    zoomValue: "{value}%",
     sampleFacts:
       "On March 1, 2024, A lent KRW 100 million to B as business funds.\nOn the same day, B gave A a promissory note promising repayment by June 30, 2024.\nLater, on March 20, 2024, B gifted KRW 50 million from that money to B's sibling C.\nOn July 5, 2024, after B failed to repay, A began reviewing whether an action to revoke a fraudulent transfer against C was possible."
   },
   ko: {
-    appEyebrow: "Legal Fact Parser",
-    appTitle: "법적 관계도 생성기",
+    appEyebrow: "법률 관계 인텔리전스",
+    appTitle: "Legal Node",
     providerLabel: "LLM 제공자",
     customProviderLabel: "사용자 지정 제공자",
     apiKeyLabel: "API_KEY",
@@ -151,12 +155,14 @@ export const translations: Record<Language, Translation> = {
     closePreview: "닫기",
     printMap: "관계도 인쇄",
     mapActionsLabel: "관계도 작업",
+    zoomLabel: "확대 비율",
+    zoomValue: "{value}%",
     sampleFacts:
       "2024년 3월 1일 A는 B에게 사업자금 명목으로 1억 원을 빌려주었다.\n같은 날 B는 A에게 2024년 6월 30일까지 변제하겠다는 차용증을 작성해 주었다.\n이후 2024년 3월 20일 B는 위 금원 중 5천만 원을 자신의 동생 C에게 증여하였다.\n2024년 7월 5일 B가 변제를 하지 않자, A는 C를 상대로 사해행위 취소 가능성을 검토하게 되었다."
   },
   zh: {
-    appEyebrow: "Legal Fact Parser",
-    appTitle: "法律关系图生成器",
+    appEyebrow: "法律关系智能分析",
+    appTitle: "Legal Node",
     providerLabel: "LLM 提供方",
     customProviderLabel: "自定义提供方",
     apiKeyLabel: "API Key",
@@ -202,12 +208,14 @@ export const translations: Record<Language, Translation> = {
     closePreview: "关闭",
     printMap: "打印关系图",
     mapActionsLabel: "关系图操作",
+    zoomLabel: "缩放",
+    zoomValue: "{value}%",
     sampleFacts:
       "2024年3月1日，A以经营资金名义借给B一亿韩元。\n同日，B向A出具借据，承诺于2024年6月30日前偿还。\n此后在2024年3月20日，B将其中五千万韩元赠与其弟弟C。\n2024年7月5日，B未按期偿还，A开始审查是否可以对C提起撤销诈害行为之诉。"
   },
   ja: {
-    appEyebrow: "Legal Fact Parser",
-    appTitle: "法律関係図ジェネレーター",
+    appEyebrow: "法律関係インテリジェンス",
+    appTitle: "Legal Node",
     providerLabel: "LLM プロバイダー",
     customProviderLabel: "カスタムプロバイダー",
     apiKeyLabel: "API Key",
@@ -253,6 +261,8 @@ export const translations: Record<Language, Translation> = {
     closePreview: "閉じる",
     printMap: "関係図を印刷",
     mapActionsLabel: "関係図アクション",
+    zoomLabel: "ズーム",
+    zoomValue: "{value}%",
     sampleFacts:
       "2024年3月1日、Aは事業資金名目でBに1億ウォンを貸し付けた。\n同日、BはAに対し、2024年6月30日までに返済する旨の借用証を書いた。\nその後、2024年3月20日にBはそのうち5千万ウォンを弟Cに贈与した。\n2024年7月5日、Bが返済しなかったため、AはCに対する詐害行為取消しの可能性を検討することになった。"
   }
