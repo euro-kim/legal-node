@@ -117,10 +117,15 @@ export default function App() {
       <section className="panel input-panel">
         <div className="section-heading">
           <div className="title-row">
-            <div>
+            <div className="brand-block">
+              <div className="brand-mark">
+                <img src="/favicon_io/original.png" alt="Legal Node logo" />
+              </div>
+              <div>
               <p className="eyebrow">{copy.appEyebrow}</p>
               <h1>{copy.appTitle}</h1>
               <p className="hero-copy">{copy.appSubtitle}</p>
+              </div>
             </div>
 
             <div className="settings-strip" aria-label="interface settings">
