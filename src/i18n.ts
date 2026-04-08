@@ -149,7 +149,7 @@ export const translations: Record<Language, Translation> = {
     lightMode: "라이트",
     darkMode: "다크",
     languageSettingsLabel: "언어",
-    appSubtitle: "법률 사실관계를 시간 흐름과 관계도로 구조화해 빠르게 검토할 수 있습니다.",
+    appSubtitle: "법률 사실관계를 시간 흐름과 관계도로 구조화",
     outputSubtitle: "현재 관계도를 검토하고, 크게 보기로 확장하거나 바로 인쇄할 수 있습니다.",
     enlargeMap: "관계도 확대",
     closePreview: "닫기",
