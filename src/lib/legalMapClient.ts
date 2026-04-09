@@ -1,4 +1,6 @@
-import type { LegalMapResult, LlmConfig } from "../types";
+import type { EntityType, LegalMapResult, LlmConfig } from "../types";
+
+const VALID_ENTITY_TYPES = new Set<EntityType>(["Person", "Company", "Object", "Organization", "Other"]);
 
 const SYSTEM_PROMPTS: Record<LlmConfig["language"], string> = {
   en: [
@@ -67,6 +69,139 @@ function extractJson(content: string): string {
 
 function asRecord(value: unknown): Record<string, unknown> | null {
   return value && typeof value === "object" ? (value as Record<string, unknown>) : null;
+}
+
+function asString(value: unknown): string | null {
+  if (typeof value !== "string") {
+    return null;
+  }
+
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : null;
+}
+
+function asOptionalString(value: unknown): string {
+  return typeof value === "string" ? value.trim() : "";
+}
+
+function isDefined<T>(value: T | null): value is T {
+  return value !== null;
+}
+
+function normalizeEntityType(value: unknown): EntityType {
+  const normalized = asString(value);
+  return normalized && VALID_ENTITY_TYPES.has(normalized as EntityType)
+    ? (normalized as EntityType)
+    : "Other";
+}
+
+function normalizeInteraction(value: unknown) {
+  const interactionRecord = asRecord(value);
+  if (!interactionRecord) {
+    return null;
+  }
+
+  const from = asString(interactionRecord.from ?? interactionRecord.source ?? interactionRecord.sender);
+  const to = asString(interactionRecord.to ?? interactionRecord.target ?? interactionRecord.receiver);
+  const action = asString(interactionRecord.action ?? interactionRecord.relation ?? interactionRecord.event);
+
+  if (!from || !to || !action) {
+    return null;
+  }
+
+  return {
+    from,
+    to,
+    action,
+    object: asOptionalString(
+      interactionRecord.object ?? interactionRecord.value ?? interactionRecord.subject ?? interactionRecord.asset
+    ),
+    legal_basis: asOptionalString(
+      interactionRecord.legal_basis ?? interactionRecord.legalBasis ?? interactionRecord.basis
+    )
+  };
+}
+
+function normalizePhase(value: unknown, index: number) {
+  const phaseRecord = asRecord(value);
+  if (!phaseRecord) {
+    return null;
+  }
+
+  const interactionsSource = Array.isArray(phaseRecord.interactions)
+    ? phaseRecord.interactions
+    : Array.isArray(phaseRecord.events)
+      ? phaseRecord.events
+      : phaseRecord.interaction
+        ? [phaseRecord.interaction]
+        : [];
+
+  const interactions = interactionsSource.map(normalizeInteraction).filter(isDefined);
+  const timestamp = asString(phaseRecord.timestamp ?? phaseRecord.time ?? phaseRecord.date) ?? undefined;
+  const step_name =
+    asString(phaseRecord.step_name ?? phaseRecord.stepName ?? phaseRecord.phase ?? phaseRecord.label) ??
+    undefined;
+
+  if (!timestamp && !step_name) {
+    if (interactions.length === 0) {
+      return null;
+    }
+
+    return {
+      step_name: `Phase ${index + 1}`,
+      interactions
+    };
+  }
+
+  return {
+    ...(timestamp ? { timestamp } : {}),
+    ...(step_name ? { step_name } : {}),
+    interactions
+  };
+}
+
+function normalizeLegalMapResult(value: unknown): LegalMapResult | null {
+  const candidate = asRecord(value);
+  if (!candidate) {
+    return null;
+  }
+
+  if (!Array.isArray(candidate.entities) || !Array.isArray(candidate.phases)) {
+    return null;
+  }
+
+  const entities = candidate.entities
+    .map((entity) => {
+      const entityRecord = asRecord(entity);
+      if (!entityRecord) {
+        return null;
+      }
+
+      const id = asString(entityRecord.id ?? entityRecord.entity_id ?? entityRecord.entityId);
+      const name = asString(entityRecord.name ?? entityRecord.label);
+
+      if (!id || !name) {
+        return null;
+      }
+
+      return {
+        id,
+        name,
+        type: normalizeEntityType(entityRecord.type)
+      };
+    })
+    .filter(isDefined);
+
+  const phases = candidate.phases.map(normalizePhase).filter(isDefined);
+
+  if (entities.length === 0 || phases.length === 0) {
+    return null;
+  }
+
+  return {
+    entities,
+    phases
+  };
 }
 
 function isLegalMapResult(value: unknown): value is LegalMapResult {
@@ -159,15 +294,25 @@ export async function generateLegalMap(
 
   const payload = await response.json();
   const content = payload?.choices?.[0]?.message?.content;
+  const normalizedContent =
+    typeof content === "string"
+      ? content
+      : Array.isArray(content)
+        ? content
+            .map((part) => (typeof part?.text === "string" ? part.text : ""))
+            .join("")
+        : null;
 
-  if (typeof content !== "string") {
+  if (typeof normalizedContent !== "string") {
     throw new Error("LLM 응답 형식이 예상과 다릅니다.");
   }
 
-  const parsed = JSON.parse(extractJson(content));
-  if (!isLegalMapResult(parsed)) {
+  const parsed = JSON.parse(extractJson(normalizedContent));
+  const normalized = normalizeLegalMapResult(parsed);
+
+  if (!normalized || !isLegalMapResult(normalized)) {
     throw new Error("JSON 구조가 entities/phases 스키마를 충족하지 않습니다.");
   }
 
-  return parsed;
+  return normalized;
 }
