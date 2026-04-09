@@ -118,42 +118,48 @@ function entityNode(entity: Entity, label: string) {
   }
 }
 
-function typeClassName(type: EntityType) {
-  return `type-${type.toLowerCase()}`;
-}
-
 function typePalette(type: EntityType, hueOffset: number) {
   switch (type) {
     case "Person":
       return {
         fill: hslToHex(214 + hueOffset, 84, 90),
         stroke: hslToHex(217 + hueOffset, 72, 40),
-        edge: "#2563eb"
+        edge: "#2563eb",
+        strokeWidth: "3.5px",
+        dasharray: "0"
       };
     case "Company":
       return {
         fill: hslToHex(154 + hueOffset, 58, 90),
         stroke: hslToHex(160 + hueOffset, 64, 32),
-        edge: "#0f766e"
+        edge: "#0f766e",
+        strokeWidth: "3.5px",
+        dasharray: "0"
       };
     case "Organization":
       return {
         fill: hslToHex(38 + hueOffset, 88, 89),
         stroke: hslToHex(26 + hueOffset, 78, 36),
-        edge: "#d97706"
+        edge: "#d97706",
+        strokeWidth: "3.5px",
+        dasharray: "8 4"
       };
     case "Object":
       return {
         fill: hslToHex(272 + hueOffset, 70, 92),
         stroke: hslToHex(270 + hueOffset, 66, 42),
-        edge: "#7c3aed"
+        edge: "#7c3aed",
+        strokeWidth: "3.5px",
+        dasharray: "0"
       };
     case "Other":
     default:
       return {
         fill: hslToHex(212 + hueOffset, 24, 93),
         stroke: hslToHex(214 + hueOffset, 22, 36),
-        edge: "#475569"
+        edge: "#475569",
+        strokeWidth: "2.75px",
+        dasharray: "3 3"
       };
   }
 }
@@ -167,14 +173,7 @@ function buildDiagram(
   const visiblePhases = getVisiblePhases(data.phases, activePhaseIndex, mode);
   const entityMap = new Map(data.entities.map((entity) => [entity.id, entity]));
   const copy = translations[language];
-  const lines = [
-    "flowchart LR",
-    "  classDef type-person stroke-width:3px;",
-    "  classDef type-company stroke-width:3px,stroke-dasharray: 0;",
-    "  classDef type-organization stroke-width:3px,stroke-dasharray: 8 4;",
-    "  classDef type-object stroke-width:3px;",
-    "  classDef type-other stroke-width:2.5px,stroke-dasharray: 3 3;"
-  ];
+  const lines = ["flowchart LR"];
   let linkIndex = 0;
 
   const linkStyles: string[] = [];
@@ -187,8 +186,9 @@ function buildDiagram(
     const label = escapeLabel(`${entity.name}\\n(${localizeEntityType(entity.type, language)})`);
     const colors = typePalette(entity.type, colorFromId(entity.id).hueOffset);
     lines.push(`  ${entityNode(entity, label)}`);
-    lines.push(`  style ${entity.id} fill:${colors.fill},stroke:${colors.stroke},stroke-width:3px,color:#0f172a;`);
-    lines.push(`  class ${entity.id} ${typeClassName(entity.type)};`);
+    lines.push(
+      `  style ${entity.id} fill:${colors.fill},stroke:${colors.stroke},stroke-width:${colors.strokeWidth},stroke-dasharray:${colors.dasharray},color:#0f172a;`
+    );
   }
 
   visiblePhases.forEach((phase) => {
@@ -281,9 +281,10 @@ export function MermaidDiagram({ data, activePhaseIndex, mode, language }: Merma
       foreignObject { overflow: visible; }
       .flowchart-link { stroke-linecap: round; stroke-linejoin: round; }
       .label text, .edgeLabel { font-family: "Pretendard Variable", "Noto Sans KR", "Noto Sans", Arial, sans-serif; }
-      .edgeLabel { display: block; width: auto; min-width: 0; max-width: none; font-size: 13px; line-height: 1.4; color: #172033; }
-      .edgeLabel .labelBkg { display: none !important; }
-      .edgeLabel rect, .labelBkg { fill: rgba(255, 252, 245, 0.98) !important; stroke: rgba(148, 163, 184, 0.55) !important; stroke-width: 1px !important; rx: 12px; ry: 12px; }
+      .edgeLabel { font-size: 13px; line-height: 1.4; color: #172033; }
+      .edgeLabel .labelBkg { display: block !important; background: rgba(255, 252, 245, 0.98) !important; border: 1px solid rgba(148, 163, 184, 0.55) !important; border-radius: 12px; padding: 8px 10px; white-space: normal !important; overflow-wrap: anywhere; word-break: break-word; }
+      .edgeLabel rect { fill: transparent !important; stroke: transparent !important; }
+      .edgeLabel p { margin: 0; white-space: normal !important; overflow-wrap: anywhere; word-break: break-word; text-align: left; }
       .edgeLabel b { display: block; margin-bottom: 8px; font-size: 13px; font-weight: 800; text-align: center; color: #0f172a; white-space: normal !important; overflow-wrap: anywhere; word-break: break-word; }
       @media print { body { padding: 0; } .frame { border: 0; padding: 0; } }
     `;
