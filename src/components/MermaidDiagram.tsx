@@ -6,12 +6,17 @@ import type { Entity, EntityType, LegalMapResult, Phase } from "../types";
 mermaid.initialize({
   startOnLoad: false,
   theme: "neutral",
+  htmlLabels: true,
+  themeVariables: {
+    fontSize: "18px"
+  },
   flowchart: {
     curve: "monotoneX",
     nodeSpacing: 48,
     rankSpacing: 72,
     padding: 20,
-    useMaxWidth: false
+    useMaxWidth: false,
+    htmlLabels: true
   }
 });
 
@@ -276,16 +281,18 @@ export function MermaidDiagram({ data, activePhaseIndex, mode, language }: Merma
       body { margin: 0; padding: 24px; font-family: "Pretendard Variable", "Noto Sans KR", "Noto Sans", Arial, sans-serif; background: #ffffff; color: #0f172a; }
       .frame { border: 1px solid #d1d5db; border-radius: 20px; padding: 24px; overflow: visible; }
       svg { display: block; width: auto; max-width: 100%; height: auto; }
+      foreignObject { overflow: visible; }
       .flowchart-link { stroke-linecap: round; stroke-linejoin: round; }
       .label text, .edgeLabel { font-family: "Pretendard Variable", "Noto Sans KR", "Noto Sans", Arial, sans-serif; }
-      .edgeLabel { display: block; font-size: 12px; line-height: 1.35; color: #172033; }
-      .edgeLabel rect { fill: rgba(255, 252, 245, 0.98) !important; stroke: rgba(148, 163, 184, 0.55) !important; stroke-width: 1px !important; rx: 12px; ry: 12px; }
-      .interaction-label { display: table; width: 248px; table-layout: fixed; }
-      .interaction-action { display: block; margin-bottom: 8px; font-size: 12px; font-weight: 800; text-align: center; white-space: normal !important; overflow-wrap: anywhere; word-break: break-word; }
+      .edgeLabel { display: block; width: auto; min-width: 0; max-width: none; font-size: 13px; line-height: 1.4; color: #172033; }
+      .edgeLabel .labelBkg { display: none !important; }
+      .edgeLabel rect, .labelBkg { fill: rgba(255, 252, 245, 0.98) !important; stroke: rgba(148, 163, 184, 0.55) !important; stroke-width: 1px !important; rx: 12px; ry: 12px; }
+      .interaction-label { display: table; width: 264px; max-width: 264px; table-layout: fixed; }
+      .interaction-action { display: block; margin-bottom: 8px; font-size: 13px; font-weight: 800; text-align: center; white-space: normal !important; overflow-wrap: anywhere; word-break: break-word; }
       .interaction-meta { display: table; width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 0; }
       .interaction-row { display: table-row; }
-      .interaction-key, .interaction-value { display: table-cell; vertical-align: top; padding: 4px 0; font-size: 11.5px; white-space: normal !important; overflow-wrap: anywhere; word-break: break-word; }
-      .interaction-key { width: 82px; padding-right: 10px; font-weight: 700; color: #475569; }
+      .interaction-key, .interaction-value { display: table-cell; vertical-align: top; padding: 4px 0; font-size: 12.5px; white-space: normal !important; overflow-wrap: anywhere; word-break: break-word; }
+      .interaction-key { width: 88px; padding-right: 10px; font-weight: 700; color: #475569; }
       .interaction-value { font-weight: 600; color: #172033; }
       @media print { body { padding: 0; } .frame { border: 0; padding: 0; } }
     `;
