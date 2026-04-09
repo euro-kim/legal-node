@@ -9,7 +9,7 @@ mermaid.initialize({
   htmlLabels: true,
   securityLevel: "loose",
   themeVariables: {
-    fontSize: "18px"
+    fontSize: "20px"
   },
   flowchart: {
     curve: "monotoneX",
@@ -199,21 +199,23 @@ function buildDiagram(
         return;
       }
 
-      const metadataRows = [
-        interaction.object ? `${escapeHtml(copy.objectLabel)}: ${escapeHtml(interaction.object)}` : "",
+      const rows = [
+        interaction.object
+          ? `<tr><th>${escapeHtml(copy.objectLabel)}</th><td>${escapeHtml(interaction.object)}</td></tr>`
+          : "",
         interaction.legal_basis
-          ? `${escapeHtml(copy.legalBasisLabel)}: ${escapeHtml(localizeLegalBasis(interaction.legal_basis, language))}`
+          ? `<tr><th>${escapeHtml(copy.legalBasisLabel)}</th><td>${escapeHtml(localizeLegalBasis(interaction.legal_basis, language))}</td></tr>`
           : ""
       ]
         .filter(Boolean)
-        .join("<br/>");
+        .join("");
 
       const edgeLabel = [
-        `<b>${escapeHtml(interaction.action)}</b>`,
-        metadataRows
-      ]
-        .filter(Boolean)
-        .join("<br/>");
+        `<div class='interaction-card'>`,
+        `<div class='interaction-action'>${escapeHtml(interaction.action)}</div>`,
+        rows ? `<table class='interaction-meta'><tbody>${rows}</tbody></table>` : "",
+        `</div>`
+      ].join("");
 
       lines.push(`  ${interaction.from} -->|"${escapeLabel(edgeLabel)}"| ${interaction.to}`);
       const fromColors = typePalette(from.type, colorFromId(from.id).hueOffset);
@@ -281,11 +283,15 @@ export function MermaidDiagram({ data, activePhaseIndex, mode, language }: Merma
       foreignObject { overflow: visible; }
       .flowchart-link { stroke-linecap: round; stroke-linejoin: round; }
       .label text, .edgeLabel { font-family: "Pretendard Variable", "Noto Sans KR", "Noto Sans", Arial, sans-serif; }
-      .edgeLabel { font-size: 13px; line-height: 1.4; color: #172033; }
-      .edgeLabel .labelBkg { display: block !important; background: rgba(255, 252, 245, 0.98) !important; border: 1px solid rgba(148, 163, 184, 0.55) !important; border-radius: 12px; padding: 8px 10px; white-space: normal !important; overflow-wrap: anywhere; word-break: break-word; }
+      .edgeLabel { font-size: 14px; line-height: 1.45; color: #172033; }
+      .edgeLabel .labelBkg { display: block !important; background: rgba(255, 252, 245, 0.98) !important; border: 1px solid rgba(148, 163, 184, 0.55) !important; border-radius: 12px; padding: 10px 12px; white-space: normal !important; overflow-wrap: anywhere; word-break: break-word; }
       .edgeLabel rect { fill: transparent !important; stroke: transparent !important; }
-      .edgeLabel p { margin: 0; white-space: normal !important; overflow-wrap: anywhere; word-break: break-word; text-align: left; }
-      .edgeLabel b { display: block; margin-bottom: 8px; font-size: 13px; font-weight: 800; text-align: center; color: #0f172a; white-space: normal !important; overflow-wrap: anywhere; word-break: break-word; }
+      .edgeLabel .interaction-card { display: block; background: transparent !important; }
+      .edgeLabel .interaction-action { margin: 0 0 8px; font-size: 14px; font-weight: 800; line-height: 1.35; text-align: center; color: #0f172a; white-space: normal !important; overflow-wrap: anywhere; word-break: break-word; }
+      .edgeLabel .interaction-meta { width: 100%; border-collapse: collapse; table-layout: fixed; background: transparent !important; }
+      .edgeLabel .interaction-meta th, .edgeLabel .interaction-meta td { padding: 4px 0; vertical-align: top; text-align: left; background: transparent !important; white-space: normal !important; overflow-wrap: anywhere; word-break: break-word; }
+      .edgeLabel .interaction-meta th { width: 42%; font-size: 12px; font-weight: 700; color: #475569; padding-right: 10px; }
+      .edgeLabel .interaction-meta td { font-size: 13px; color: #172033; }
       @media print { body { padding: 0; } .frame { border: 0; padding: 0; } }
     `;
 
