@@ -34,6 +34,15 @@ function escapeLabel(value: string) {
   return value.replace(/"/g, '\\"');
 }
 
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 function colorFromId(id: string) {
   let hash = 0;
   for (const char of id) {
@@ -168,65 +177,12 @@ function buildDiagram(
     linkIndex += 1;
   };
 
-  const renderEntity = (entity: Entity, indent = "  ") => {
+  for (const entity of data.entities) {
     const label = escapeLabel(`${entity.name}\\n(${localizeEntityType(entity.type, language)})`);
     const colors = typePalette(entity.type, colorFromId(entity.id).hueOffset);
-    lines.push(`${indent}${entityNode(entity, label)}`);
+    lines.push(`  ${entityNode(entity, label)}`);
     lines.push(`  style ${entity.id} fill:${colors.fill},stroke:${colors.stroke},stroke-width:3px,color:#0f172a;`);
     lines.push(`  class ${entity.id} ${typeClassName(entity.type)};`);
-  };
-
-  if (mode === "cumulative") {
-    lines.push('  subgraph entityLane[" "]');
-    lines.push("    direction LR");
-
-    for (const entity of data.entities) {
-      renderEntity(entity, "    ");
-    }
-
-    for (let index = 0; index < data.entities.length - 1; index += 1) {
-      const currentEntity = data.entities[index];
-      const nextEntity = data.entities[index + 1];
-      lines.push(`    ${currentEntity.id} --- ${nextEntity.id}`);
-      pushLinkStyle("stroke:transparent,stroke-width:0,fill:none;");
-    }
-
-    lines.push("  end");
-    lines.push("  style entityLane fill:transparent,stroke:transparent;");
-  } else {
-    const activeEntityIds = new Set<string>();
-    visiblePhases.forEach((phase) => {
-      phase.interactions.forEach((interaction) => {
-        activeEntityIds.add(interaction.from);
-        activeEntityIds.add(interaction.to);
-      });
-    });
-
-    const activeEntities = data.entities.filter((entity) => activeEntityIds.has(entity.id));
-    const inactiveEntities = data.entities.filter((entity) => !activeEntityIds.has(entity.id));
-
-    if (activeEntities.length > 0) {
-      lines.push('  subgraph interactionLane[" "]');
-      lines.push("    direction LR");
-
-      for (const entity of activeEntities) {
-        renderEntity(entity, "    ");
-      }
-
-      for (let index = 0; index < activeEntities.length - 1; index += 1) {
-        const currentEntity = activeEntities[index];
-        const nextEntity = activeEntities[index + 1];
-        lines.push(`    ${currentEntity.id} --- ${nextEntity.id}`);
-        pushLinkStyle("stroke:transparent,stroke-width:0,fill:none;");
-      }
-
-      lines.push("  end");
-      lines.push("  style interactionLane fill:transparent,stroke:transparent;");
-    }
-
-    for (const entity of inactiveEntities) {
-      renderEntity(entity);
-    }
   }
 
   visiblePhases.forEach((phase) => {
@@ -237,15 +193,25 @@ function buildDiagram(
         return;
       }
 
-      const edgeLabel = [
-        interaction.action,
-        interaction.object ? `${copy.objectLabel}: ${interaction.object}` : "",
+      const metadataRows = [
+        interaction.object
+          ? `<span class='interaction-key'>${escapeHtml(copy.objectLabel)}</span><span class='interaction-value'>${escapeHtml(interaction.object)}</span>`
+          : "",
         interaction.legal_basis
-          ? `${copy.legalBasisLabel}: ${localizeLegalBasis(interaction.legal_basis, language)}`
+          ? `<span class='interaction-key'>${escapeHtml(copy.legalBasisLabel)}</span><span class='interaction-value'>${escapeHtml(localizeLegalBasis(interaction.legal_basis, language))}</span>`
           : ""
       ]
         .filter(Boolean)
-        .join("<br/>");
+        .join("");
+
+      const edgeLabel = [
+        `<div class='interaction-label'>`,
+        `  <div class='interaction-action'>${escapeHtml(interaction.action)}</div>`,
+        metadataRows ? `  <div class='interaction-meta'>${metadataRows}</div>` : "",
+        `</div>`
+      ]
+        .filter(Boolean)
+        .join("");
 
       lines.push(`  ${interaction.from} -->|"${escapeLabel(edgeLabel)}"| ${interaction.to}`);
       const fromColors = typePalette(from.type, colorFromId(from.id).hueOffset);
