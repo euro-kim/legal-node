@@ -50,6 +50,8 @@ export interface Translation {
   mapActionsLabel: string;
   zoomLabel: string;
   zoomValue: string;
+  sampleResultTitle: string;
+  sampleResultNotice: string;
   sampleFacts: string;
 }
 
@@ -104,6 +106,9 @@ export const translations: Record<Language, Translation> = {
     mapActionsLabel: "Map Actions",
     zoomLabel: "Zoom",
     zoomValue: "{value}%",
+    sampleResultTitle: "Sample Result",
+    sampleResultNotice:
+      "This is a built-in sample generated from the sample facts. Enter actual facts and run Structure with LLM for real work.",
     sampleFacts:
       "On March 1, 2024, A lent KRW 100 million to B as business funds.\nOn the same day, B gave A a promissory note promising repayment by June 30, 2024.\nLater, on March 20, 2024, B gifted KRW 50 million from that money to B's sibling C.\nOn July 5, 2024, after B failed to repay, A began reviewing whether an action to revoke a fraudulent transfer against C was possible."
   },
@@ -157,6 +162,9 @@ export const translations: Record<Language, Translation> = {
     mapActionsLabel: "관계도 작업",
     zoomLabel: "확대 비율",
     zoomValue: "{value}%",
+    sampleResultTitle: "샘플 결과",
+    sampleResultNotice:
+      "현재 표시된 관계도는 기본 샘플 사실관계로부터 생성된 예시입니다. 실제 작업을 위해서는 실제 사실관계를 입력한 뒤 LLM으로 구조화를 실행하세요.",
     sampleFacts:
       "2024년 3월 1일 A는 B에게 사업자금 명목으로 1억 원을 빌려주었다.\n같은 날 B는 A에게 2024년 6월 30일까지 변제하겠다는 차용증을 작성해 주었다.\n이후 2024년 3월 20일 B는 위 금원 중 5천만 원을 자신의 동생 C에게 증여하였다.\n2024년 7월 5일 B가 변제를 하지 않자, A는 C를 상대로 사해행위 취소 가능성을 검토하게 되었다."
   },
@@ -210,6 +218,9 @@ export const translations: Record<Language, Translation> = {
     mapActionsLabel: "关系图操作",
     zoomLabel: "缩放",
     zoomValue: "{value}%",
+    sampleResultTitle: "示例结果",
+    sampleResultNotice:
+      "当前显示的是基于内置示例事实生成的示例关系图。实际使用时，请输入真实事实后再执行结构化。",
     sampleFacts:
       "2024年3月1日，A以经营资金名义借给B一亿韩元。\n同日，B向A出具借据，承诺于2024年6月30日前偿还。\n此后在2024年3月20日，B将其中五千万韩元赠与其弟弟C。\n2024年7月5日，B未按期偿还，A开始审查是否可以对C提起撤销诈害行为之诉。"
   },
@@ -263,6 +274,9 @@ export const translations: Record<Language, Translation> = {
     mapActionsLabel: "関係図アクション",
     zoomLabel: "ズーム",
     zoomValue: "{value}%",
+    sampleResultTitle: "サンプル結果",
+    sampleResultNotice:
+      "現在表示されている図は、組み込みのサンプル事実から生成した例です。実務用には実際の事実関係を入力してから構造化を実行してください。",
     sampleFacts:
       "2024年3月1日、Aは事業資金名目でBに1億ウォンを貸し付けた。\n同日、BはAに対し、2024年6月30日までに返済する旨の借用証を書いた。\nその後、2024年3月20日にBはそのうち5千万ウォンを弟Cに贈与した。\n2024年7月5日、Bが返済しなかったため、AはCに対する詐害行為取消しの可能性を検討することになった。"
   }

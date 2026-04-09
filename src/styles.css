@@ -320,6 +320,11 @@ textarea {
   color: var(--segmented-active-text);
 }
 
+.phase-chip.active .phase-chip-timestamp,
+.phase-chip.active .phase-chip-step {
+  color: var(--segmented-active-text);
+}
+
 .control-cluster {
   margin-top: 20px;
   padding: 20px;
@@ -420,6 +425,7 @@ textarea {
 .empty-state,
 .json-preview pre,
 .error-panel,
+.sample-banner,
 .phase-meta,
 .dialog-panel {
   border-radius: 24px;
@@ -691,6 +697,25 @@ textarea {
   padding: 14px 16px;
   background: var(--error-bg);
   color: var(--error-text);
+}
+
+.sample-banner {
+  padding: 16px 18px;
+  border: 1px solid rgba(180, 83, 9, 0.18);
+  background: linear-gradient(180deg, rgba(255, 247, 237, 0.95), rgba(255, 251, 235, 0.98));
+  color: #9a3412;
+}
+
+.sample-banner strong,
+.sample-banner p {
+  margin: 0;
+}
+
+.sample-banner p {
+  margin-top: 6px;
+  color: #7c2d12;
+  font-size: 13px;
+  line-height: 1.5;
 }
 
 .phase-meta {

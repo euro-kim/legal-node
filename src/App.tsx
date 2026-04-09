@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import sampleResult from "../sample.json";
 import { defaultConfig } from "./config";
 import { localizeEntityType, translations, type Language } from "./i18n";
 import { CUSTOM_MODEL_ID, CUSTOM_PROVIDER_ID, getProviderById, providerOptions } from "./llmOptions";
@@ -32,6 +33,11 @@ function detectModel(providerId: string, model: string) {
   return provider.models.some((option) => option.id === model) ? model : CUSTOM_MODEL_ID;
 }
 
+function isBuiltinSampleFacts(value: string) {
+  const normalized = value.trim();
+  return Object.values(translations).some((item) => item.sampleFacts.trim() === normalized);
+}
+
 export default function App() {
   const [config, setConfig] = useState<LlmConfig>(defaultConfig);
   const [themeMode, setThemeMode] = useState<ThemeMode>("light");
@@ -45,6 +51,7 @@ export default function App() {
   const [activePhaseIndex, setActivePhaseIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [isShowingSampleResult, setIsShowingSampleResult] = useState(false);
 
   const copy = translations[config.language];
   const selectedProvider = getProviderById(providerId);
@@ -98,8 +105,17 @@ export default function App() {
   };
 
   const handleParse = async () => {
-    setIsLoading(true);
     setError("");
+
+    if (isBuiltinSampleFacts(factText)) {
+      setResult(sampleResult as LegalMapResult);
+      setActivePhaseIndex(0);
+      setIsShowingSampleResult(true);
+      return;
+    }
+
+    setIsLoading(true);
+    setIsShowingSampleResult(false);
 
     try {
       const parsed = await generateLegalMap(factText, normalizeConfig(config));
@@ -306,6 +322,13 @@ export default function App() {
             </button>
           </div>
         </div>
+
+        {isShowingSampleResult ? (
+          <div className="sample-banner" role="status" aria-live="polite">
+            <strong>{copy.sampleResultTitle}</strong>
+            <p>{copy.sampleResultNotice}</p>
+          </div>
+        ) : null}
 
         <div className="phase-strip">
           {result?.phases.map((phase, index) => {

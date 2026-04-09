@@ -1,0 +1,71 @@
+{
+  "entities": [
+    {
+      "id": "E1",
+      "name": "A",
+      "type": "Person"
+    },
+    {
+      "id": "E2",
+      "name": "B",
+      "type": "Person"
+    },
+    {
+      "id": "E3",
+      "name": "C",
+      "type": "Person"
+    }
+  ],
+  "phases": [
+    {
+      "timestamp": "2024-03-01",
+      "interactions": [
+        {
+          "from": "E1",
+          "to": "E2",
+          "action": "금전 대여",
+          "object": "1억원",
+          "legal_basis": "금전소비대차"
+        },
+        {
+          "from": "E2",
+          "to": "E1",
+          "action": "차용증 교부",
+          "object": "차용증 (변제기 2024-06-30)",
+          "legal_basis": "Contract"
+        }
+      ]
+    },
+    {
+      "timestamp": "2024-03-20",
+      "interactions": [
+        {
+          "from": "E2",
+          "to": "E3",
+          "action": "금전 증여",
+          "object": "5천만원",
+          "legal_basis": "증여"
+        }
+      ]
+    },
+    {
+      "timestamp": "2024-07-05",
+      "interactions": [
+        {
+          "from": "E2",
+          "to": "E1",
+          "action": "채무 불이행",
+          "object": "1억원",
+          "legal_basis": "Default"
+        },
+        {
+          "from": "E1",
+          "to": "E3",
+          "action": "사해행위 취소 검토",
+          "object": "5천만원 증여",
+          "legal_basis": "사해행위취소권"
+        }
+      ]
+    }
+  ]
+}

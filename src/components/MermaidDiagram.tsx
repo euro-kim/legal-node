@@ -7,6 +7,7 @@ mermaid.initialize({
   startOnLoad: false,
   theme: "neutral",
   htmlLabels: true,
+  securityLevel: "loose",
   themeVariables: {
     fontSize: "18px"
   },
