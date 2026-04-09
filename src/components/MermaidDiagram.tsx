@@ -266,58 +266,21 @@ export function MermaidDiagram({ data, activePhaseIndex, mode, language }: Merma
     return <div className="error-panel">{error}</div>;
   }
 
-  const handlePrint = () => {
+  const handleDownload = () => {
     if (!svg) {
       return;
     }
-
-    const printWindow = window.open("", "_blank", "noopener,noreferrer,width=1200,height=900");
-    if (!printWindow) {
-      return;
-    }
-
-    const printStyles = `
-      body { margin: 0; padding: 24px; font-family: "Pretendard Variable", "Noto Sans KR", "Noto Sans", Arial, sans-serif; background: #ffffff; color: #0f172a; }
-      .frame { border: 1px solid #d1d5db; border-radius: 20px; padding: 24px; overflow: visible; }
-      svg { display: block; width: auto; max-width: 100%; height: auto; }
-      foreignObject { overflow: visible; }
-      .flowchart-link { stroke-linecap: round; stroke-linejoin: round; }
-      .label text, .edgeLabel { font-family: "Pretendard Variable", "Noto Sans KR", "Noto Sans", Arial, sans-serif; }
-      .edgeLabel { font-size: 14px; line-height: 1.45; color: #172033; }
-      .edgeLabel .labelBkg { display: block !important; background: rgba(255, 252, 245, 0.98) !important; border: 1px solid rgba(148, 163, 184, 0.55) !important; border-radius: 12px; padding: 10px 12px; white-space: normal !important; overflow-wrap: anywhere; word-break: break-word; }
-      .edgeLabel rect { fill: transparent !important; stroke: transparent !important; }
-      .edgeLabel .interaction-card { display: block; background: transparent !important; }
-      .edgeLabel .interaction-action { margin: 0 0 8px; font-size: 14px; font-weight: 800; line-height: 1.35; text-align: center; color: #0f172a; white-space: normal !important; overflow-wrap: anywhere; word-break: break-word; }
-      .edgeLabel .interaction-meta { width: 100%; border-collapse: collapse; table-layout: fixed; background: transparent !important; }
-      .edgeLabel .interaction-meta th, .edgeLabel .interaction-meta td { padding: 4px 0; vertical-align: top; text-align: left; background: transparent !important; white-space: normal !important; overflow-wrap: anywhere; word-break: break-word; }
-      .edgeLabel .interaction-meta th { width: 42%; font-size: 12px; font-weight: 700; color: #475569; padding-right: 10px; }
-      .edgeLabel .interaction-meta td { font-size: 13px; color: #172033; }
-      @media print { body { padding: 0; } .frame { border: 0; padding: 0; } }
-    `;
-
-    printWindow.document.write(`
-      <html>
-        <head>
-          <title>${copy.printMap}</title>
-          <style>${printStyles}</style>
-        </head>
-        <body>
-          <div class="frame">${svg}</div>
-        </body>
-      </html>
-    `);
-    printWindow.document.close();
-    const triggerPrint = () => {
-      printWindow.focus();
-      printWindow.requestAnimationFrame(() => {
-        printWindow.requestAnimationFrame(() => {
-          printWindow.print();
-        });
-      });
-    };
-
-    printWindow.onload = triggerPrint;
-    window.setTimeout(triggerPrint, 300);
+    const svgMarkup = svg.startsWith("<?xml") ? svg : `<?xml version="1.0" encoding="UTF-8"?>\n${svg}`;
+    const blob = new Blob([svgMarkup], { type: "image/svg+xml;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    const phasePart = activePhaseIndex + 1;
+    anchor.href = url;
+    anchor.download = `legal-node-map-${mode}-phase-${phasePart}.svg`;
+    document.body.append(anchor);
+    anchor.click();
+    anchor.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
 
   return (
@@ -335,8 +298,8 @@ export function MermaidDiagram({ data, activePhaseIndex, mode, language }: Merma
           >
             {copy.enlargeMap}
           </button>
-          <button type="button" className="secondary-button" onClick={handlePrint} disabled={!svg}>
-            {copy.printMap}
+          <button type="button" className="secondary-button" onClick={handleDownload} disabled={!svg}>
+            {copy.downloadMap}
           </button>
         </div>
         <div className="diagram-shell">
@@ -366,8 +329,8 @@ export function MermaidDiagram({ data, activePhaseIndex, mode, language }: Merma
                 </label>
               </div>
               <div className="dialog-actions">
-                <button type="button" className="secondary-button" onClick={handlePrint}>
-                  {copy.printMap}
+                <button type="button" className="secondary-button" onClick={handleDownload}>
+                  {copy.downloadMap}
                 </button>
                 <button type="button" className="secondary-button" onClick={() => setIsExpanded(false)}>
                   {copy.closePreview}

@@ -52,6 +52,7 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [isShowingSampleResult, setIsShowingSampleResult] = useState(false);
+  const [isApiHelpOpen, setIsApiHelpOpen] = useState(false);
 
   const copy = translations[config.language];
   const selectedProvider = getProviderById(providerId);
@@ -222,7 +223,17 @@ export default function App() {
             </label>
 
             <label>
-              {copy.apiKeyLabel}
+              <span className="field-label-row">
+                <span>{copy.apiKeyLabel}</span>
+                <button
+                  type="button"
+                  className="help-trigger"
+                  aria-label={copy.apiKeyHelpLabel}
+                  onClick={() => setIsApiHelpOpen(true)}
+                >
+                  ?
+                </button>
+              </span>
               <input
                 type="password"
                 value={config.apiKey}
@@ -374,6 +385,39 @@ export default function App() {
           </div>
         </div>
       </section>
+
+      {isApiHelpOpen ? (
+        <div
+          className="dialog-backdrop"
+          role="dialog"
+          aria-modal="true"
+          aria-label={copy.apiKeyHelpTitle}
+          onClick={() => setIsApiHelpOpen(false)}
+        >
+          <div className="dialog-panel help-dialog" onClick={(event) => event.stopPropagation()}>
+            <div className="dialog-toolbar">
+              <div className="dialog-heading">
+                <strong>{copy.apiKeyHelpTitle}</strong>
+              </div>
+              <div className="dialog-actions">
+                <button type="button" className="secondary-button" onClick={() => setIsApiHelpOpen(false)}>
+                  {copy.closePreview}
+                </button>
+              </div>
+            </div>
+            <div className="help-content">
+              <p>{copy.apiKeyHelpIntro}</p>
+              <ul className="help-list">
+                <li>{copy.apiKeyHelpOpenAi}</li>
+                <li>{copy.apiKeyHelpAnthropic}</li>
+                <li>{copy.apiKeyHelpGoogle}</li>
+                <li>{copy.apiKeyHelpOpenRouter}</li>
+                <li>{copy.apiKeyHelpCustom}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </main>
   );
 }

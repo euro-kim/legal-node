@@ -6,6 +6,14 @@ export interface Translation {
   providerLabel: string;
   customProviderLabel: string;
   apiKeyLabel: string;
+  apiKeyHelpLabel: string;
+  apiKeyHelpTitle: string;
+  apiKeyHelpIntro: string;
+  apiKeyHelpOpenAi: string;
+  apiKeyHelpAnthropic: string;
+  apiKeyHelpGoogle: string;
+  apiKeyHelpOpenRouter: string;
+  apiKeyHelpCustom: string;
   baseUrlLabel: string;
   modelLabel: string;
   customModelLabel: string;
@@ -46,7 +54,7 @@ export interface Translation {
   outputSubtitle: string;
   enlargeMap: string;
   closePreview: string;
-  printMap: string;
+  downloadMap: string;
   mapActionsLabel: string;
   zoomLabel: string;
   zoomValue: string;
@@ -62,6 +70,14 @@ export const translations: Record<Language, Translation> = {
     providerLabel: "LLM provider",
     customProviderLabel: "Custom provider",
     apiKeyLabel: "API key",
+    apiKeyHelpLabel: "How to get API keys",
+    apiKeyHelpTitle: "How to get an API key",
+    apiKeyHelpIntro: "You need an API key from the provider you selected. Common options:",
+    apiKeyHelpOpenAi: "OpenAI: create a key in the API keys section of the OpenAI Platform dashboard.",
+    apiKeyHelpAnthropic: "Anthropic: create a key in the API keys section of the Anthropic Console.",
+    apiKeyHelpGoogle: "Google: create a Gemini API key in Google AI Studio.",
+    apiKeyHelpOpenRouter: "OpenRouter: create a key in the Keys section of the OpenRouter dashboard.",
+    apiKeyHelpCustom: "Custom or self-hosted providers: use the key issued by that service, or leave it blank only if your endpoint truly does not require authentication.",
     baseUrlLabel: "Base URL",
     modelLabel: "Model",
     customModelLabel: "Custom model",
@@ -99,10 +115,10 @@ export const translations: Record<Language, Translation> = {
     darkMode: "Dark",
     languageSettingsLabel: "Language",
     appSubtitle: "Structure legal facts into a cleaner timeline and relationship map for fast case review.",
-    outputSubtitle: "Review the active relationship map, expand it for presentation, or print it directly.",
+    outputSubtitle: "Review the active relationship map, expand it for presentation, or download it directly.",
     enlargeMap: "Enlarge Map",
     closePreview: "Close",
-    printMap: "Print Map",
+    downloadMap: "Download Map",
     mapActionsLabel: "Map Actions",
     zoomLabel: "Zoom",
     zoomValue: "{value}%",
@@ -118,6 +134,14 @@ export const translations: Record<Language, Translation> = {
     providerLabel: "LLM 제공자",
     customProviderLabel: "사용자 지정 제공자",
     apiKeyLabel: "API_KEY",
+    apiKeyHelpLabel: "API 키 받는 방법",
+    apiKeyHelpTitle: "API 키 발급 방법",
+    apiKeyHelpIntro: "선택한 제공자의 API 키가 필요합니다. 대표적인 예시는 다음과 같습니다.",
+    apiKeyHelpOpenAi: "OpenAI: OpenAI Platform 대시보드의 API keys 메뉴에서 키를 생성하세요.",
+    apiKeyHelpAnthropic: "Anthropic: Anthropic Console의 API keys 메뉴에서 키를 생성하세요.",
+    apiKeyHelpGoogle: "Google: Google AI Studio에서 Gemini API 키를 생성하세요.",
+    apiKeyHelpOpenRouter: "OpenRouter: OpenRouter 대시보드의 Keys 메뉴에서 키를 생성하세요.",
+    apiKeyHelpCustom: "사용자 지정 또는 자체 호스팅 제공자: 해당 서비스에서 발급한 키를 사용하세요. 인증이 정말 필요 없는 엔드포인트일 때만 비워 두세요.",
     baseUrlLabel: "BASE_URL",
     modelLabel: "MODEL",
     customModelLabel: "사용자 지정 모델",
@@ -155,10 +179,10 @@ export const translations: Record<Language, Translation> = {
     darkMode: "다크",
     languageSettingsLabel: "언어",
     appSubtitle: "법률 사실관계를 시간 흐름과 관계도로 구조화",
-    outputSubtitle: "현재 관계도를 검토하고, 크게 보기로 확장하거나 바로 인쇄할 수 있습니다.",
+    outputSubtitle: "현재 관계도를 검토하고, 크게 보기로 확장하거나 파일로 내려받을 수 있습니다.",
     enlargeMap: "관계도 확대",
     closePreview: "닫기",
-    printMap: "관계도 인쇄",
+    downloadMap: "관계도 다운로드",
     mapActionsLabel: "관계도 작업",
     zoomLabel: "확대 비율",
     zoomValue: "{value}%",
@@ -174,6 +198,14 @@ export const translations: Record<Language, Translation> = {
     providerLabel: "LLM 提供方",
     customProviderLabel: "自定义提供方",
     apiKeyLabel: "API Key",
+    apiKeyHelpLabel: "如何获取 API Key",
+    apiKeyHelpTitle: "如何获取 API Key",
+    apiKeyHelpIntro: "你需要所选提供方的 API Key。常见方式如下：",
+    apiKeyHelpOpenAi: "OpenAI：在 OpenAI Platform 控制台的 API keys 页面创建密钥。",
+    apiKeyHelpAnthropic: "Anthropic：在 Anthropic Console 的 API keys 页面创建密钥。",
+    apiKeyHelpGoogle: "Google：在 Google AI Studio 中创建 Gemini API Key。",
+    apiKeyHelpOpenRouter: "OpenRouter：在 OpenRouter 控制台的 Keys 页面创建密钥。",
+    apiKeyHelpCustom: "自定义或自托管提供方：使用该服务签发的密钥。只有在端点确实不需要认证时才留空。",
     baseUrlLabel: "Base URL",
     modelLabel: "模型",
     customModelLabel: "自定义模型",
@@ -211,10 +243,10 @@ export const translations: Record<Language, Translation> = {
     darkMode: "深色",
     languageSettingsLabel: "语言",
     appSubtitle: "将法律事实整理为更清晰的时间线和关系图，便于快速审阅案件。",
-    outputSubtitle: "查看当前关系图，可放大展示，也可直接打印。",
+    outputSubtitle: "查看当前关系图，可放大展示，也可直接下载文件。",
     enlargeMap: "放大关系图",
     closePreview: "关闭",
-    printMap: "打印关系图",
+    downloadMap: "下载关系图",
     mapActionsLabel: "关系图操作",
     zoomLabel: "缩放",
     zoomValue: "{value}%",
@@ -230,6 +262,14 @@ export const translations: Record<Language, Translation> = {
     providerLabel: "LLM プロバイダー",
     customProviderLabel: "カスタムプロバイダー",
     apiKeyLabel: "API Key",
+    apiKeyHelpLabel: "APIキーの取得方法",
+    apiKeyHelpTitle: "APIキーの取得方法",
+    apiKeyHelpIntro: "選択したプロバイダーのAPIキーが必要です。代表例は次のとおりです。",
+    apiKeyHelpOpenAi: "OpenAI: OpenAI Platform ダッシュボードの API keys 画面でキーを作成します。",
+    apiKeyHelpAnthropic: "Anthropic: Anthropic Console の API keys 画面でキーを作成します。",
+    apiKeyHelpGoogle: "Google: Google AI Studio で Gemini APIキーを作成します。",
+    apiKeyHelpOpenRouter: "OpenRouter: OpenRouter ダッシュボードの Keys 画面でキーを作成します。",
+    apiKeyHelpCustom: "カスタムまたはセルフホストのプロバイダー: そのサービスが発行したキーを使用してください。認証不要のエンドポイントであることが明確な場合のみ空欄にしてください。",
     baseUrlLabel: "Base URL",
     modelLabel: "モデル",
     customModelLabel: "カスタムモデル",
@@ -267,10 +307,10 @@ export const translations: Record<Language, Translation> = {
     darkMode: "ダーク",
     languageSettingsLabel: "言語",
     appSubtitle: "法律上の事実関係を時系列と関係図に整理し、案件レビューを素早く行えます。",
-    outputSubtitle: "現在の関係図を確認し、拡大表示や印刷をすぐに行えます。",
+    outputSubtitle: "現在の関係図を確認し、拡大表示やファイルのダウンロードをすぐに行えます。",
     enlargeMap: "関係図を拡大",
     closePreview: "閉じる",
-    printMap: "関係図を印刷",
+    downloadMap: "関係図をダウンロード",
     mapActionsLabel: "関係図アクション",
     zoomLabel: "ズーム",
     zoomValue: "{value}%",
