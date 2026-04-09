@@ -154,7 +154,6 @@ function buildDiagram(
   const copy = translations[language];
   const lines = [
     "flowchart LR",
-    "  classDef anchor fill:transparent,stroke:transparent,color:transparent;",
     "  classDef type-person stroke-width:3px;",
     "  classDef type-company stroke-width:3px,stroke-dasharray: 0;",
     "  classDef type-organization stroke-width:3px,stroke-dasharray: 8 4;",
@@ -169,26 +168,66 @@ function buildDiagram(
     linkIndex += 1;
   };
 
-  lines.push('  subgraph entityLane[" "]');
-  lines.push("    direction LR");
-
-  for (const entity of data.entities) {
+  const renderEntity = (entity: Entity, indent = "  ") => {
     const label = escapeLabel(`${entity.name}\\n(${localizeEntityType(entity.type, language)})`);
     const colors = typePalette(entity.type, colorFromId(entity.id).hueOffset);
-    lines.push(`    ${entityNode(entity, label)}`);
+    lines.push(`${indent}${entityNode(entity, label)}`);
     lines.push(`  style ${entity.id} fill:${colors.fill},stroke:${colors.stroke},stroke-width:3px,color:#0f172a;`);
     lines.push(`  class ${entity.id} ${typeClassName(entity.type)};`);
-  }
+  };
 
-  for (let index = 0; index < data.entities.length - 1; index += 1) {
-    const currentEntity = data.entities[index];
-    const nextEntity = data.entities[index + 1];
-    lines.push(`    ${currentEntity.id} --- ${nextEntity.id}`);
-    pushLinkStyle("stroke:transparent,stroke-width:0,fill:none;");
-  }
+  if (mode === "cumulative") {
+    lines.push('  subgraph entityLane[" "]');
+    lines.push("    direction LR");
 
-  lines.push("  end");
-  lines.push("  style entityLane fill:transparent,stroke:transparent;");
+    for (const entity of data.entities) {
+      renderEntity(entity, "    ");
+    }
+
+    for (let index = 0; index < data.entities.length - 1; index += 1) {
+      const currentEntity = data.entities[index];
+      const nextEntity = data.entities[index + 1];
+      lines.push(`    ${currentEntity.id} --- ${nextEntity.id}`);
+      pushLinkStyle("stroke:transparent,stroke-width:0,fill:none;");
+    }
+
+    lines.push("  end");
+    lines.push("  style entityLane fill:transparent,stroke:transparent;");
+  } else {
+    const activeEntityIds = new Set<string>();
+    visiblePhases.forEach((phase) => {
+      phase.interactions.forEach((interaction) => {
+        activeEntityIds.add(interaction.from);
+        activeEntityIds.add(interaction.to);
+      });
+    });
+
+    const activeEntities = data.entities.filter((entity) => activeEntityIds.has(entity.id));
+    const inactiveEntities = data.entities.filter((entity) => !activeEntityIds.has(entity.id));
+
+    if (activeEntities.length > 0) {
+      lines.push('  subgraph interactionLane[" "]');
+      lines.push("    direction LR");
+
+      for (const entity of activeEntities) {
+        renderEntity(entity, "    ");
+      }
+
+      for (let index = 0; index < activeEntities.length - 1; index += 1) {
+        const currentEntity = activeEntities[index];
+        const nextEntity = activeEntities[index + 1];
+        lines.push(`    ${currentEntity.id} --- ${nextEntity.id}`);
+        pushLinkStyle("stroke:transparent,stroke-width:0,fill:none;");
+      }
+
+      lines.push("  end");
+      lines.push("  style interactionLane fill:transparent,stroke:transparent;");
+    }
+
+    for (const entity of inactiveEntities) {
+      renderEntity(entity);
+    }
+  }
 
   visiblePhases.forEach((phase) => {
     phase.interactions.forEach((interaction) => {
