@@ -200,24 +200,20 @@ function buildDiagram(
       }
 
       const metadataRows = [
-        interaction.object
-          ? `<div class='interaction-row'><span class='interaction-key'>${escapeHtml(copy.objectLabel)}</span><span class='interaction-value'>${escapeHtml(interaction.object)}</span></div>`
-          : "",
+        interaction.object ? `${escapeHtml(copy.objectLabel)}: ${escapeHtml(interaction.object)}` : "",
         interaction.legal_basis
-          ? `<div class='interaction-row'><span class='interaction-key'>${escapeHtml(copy.legalBasisLabel)}</span><span class='interaction-value'>${escapeHtml(localizeLegalBasis(interaction.legal_basis, language))}</span></div>`
+          ? `${escapeHtml(copy.legalBasisLabel)}: ${escapeHtml(localizeLegalBasis(interaction.legal_basis, language))}`
           : ""
       ]
         .filter(Boolean)
-        .join("");
+        .join("<br/>");
 
       const edgeLabel = [
-        `<div class='interaction-label'>`,
-        `  <div class='interaction-action'>${escapeHtml(interaction.action)}</div>`,
-        metadataRows ? `  <div class='interaction-meta'>${metadataRows}</div>` : "",
-        `</div>`
+        `<b>${escapeHtml(interaction.action)}</b>`,
+        metadataRows
       ]
         .filter(Boolean)
-        .join("");
+        .join("<br/>");
 
       lines.push(`  ${interaction.from} -->|"${escapeLabel(edgeLabel)}"| ${interaction.to}`);
       const fromColors = typePalette(from.type, colorFromId(from.id).hueOffset);
@@ -288,13 +284,7 @@ export function MermaidDiagram({ data, activePhaseIndex, mode, language }: Merma
       .edgeLabel { display: block; width: auto; min-width: 0; max-width: none; font-size: 13px; line-height: 1.4; color: #172033; }
       .edgeLabel .labelBkg { display: none !important; }
       .edgeLabel rect, .labelBkg { fill: rgba(255, 252, 245, 0.98) !important; stroke: rgba(148, 163, 184, 0.55) !important; stroke-width: 1px !important; rx: 12px; ry: 12px; }
-      .interaction-label { display: table; width: 264px; max-width: 264px; table-layout: fixed; }
-      .interaction-action { display: block; margin-bottom: 8px; font-size: 13px; font-weight: 800; text-align: center; white-space: normal !important; overflow-wrap: anywhere; word-break: break-word; }
-      .interaction-meta { display: table; width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 0; }
-      .interaction-row { display: table-row; }
-      .interaction-key, .interaction-value { display: table-cell; vertical-align: top; padding: 4px 0; font-size: 12.5px; white-space: normal !important; overflow-wrap: anywhere; word-break: break-word; }
-      .interaction-key { width: 88px; padding-right: 10px; font-weight: 700; color: #475569; }
-      .interaction-value { font-weight: 600; color: #172033; }
+      .edgeLabel b { display: block; margin-bottom: 8px; font-size: 13px; font-weight: 800; text-align: center; color: #0f172a; white-space: normal !important; overflow-wrap: anywhere; word-break: break-word; }
       @media print { body { padding: 0; } .frame { border: 0; padding: 0; } }
     `;
 
