@@ -309,16 +309,19 @@ export default function App() {
 
         <div className="phase-strip">
           {result?.phases.map((phase, index) => {
-            const label =
-              phase.step_name || phase.timestamp || `${copy.defaultPhaseLabel} ${index + 1}`;
+            const timestamp = phase.timestamp;
+            const stepName = phase.step_name || (!timestamp ? `${copy.defaultPhaseLabel} ${index + 1}` : "");
             return (
               <button
                 type="button"
-                key={label + index}
+                key={`${phase.timestamp ?? ""}-${phase.step_name ?? ""}-${index}`}
                 className={index === activePhaseIndex ? "phase-chip active" : "phase-chip"}
                 onClick={() => setActivePhaseIndex(index)}
               >
-                {label}
+                <span className="phase-chip-content">
+                  {timestamp ? <span className="phase-chip-timestamp">{timestamp}</span> : null}
+                  {stepName ? <span className="phase-chip-step">{stepName}</span> : null}
+                </span>
               </button>
             );
           })}

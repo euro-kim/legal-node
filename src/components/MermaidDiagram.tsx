@@ -195,10 +195,10 @@ function buildDiagram(
 
       const metadataRows = [
         interaction.object
-          ? `<span class='interaction-key'>${escapeHtml(copy.objectLabel)}</span><span class='interaction-value'>${escapeHtml(interaction.object)}</span>`
+          ? `<div class='interaction-row'><span class='interaction-key'>${escapeHtml(copy.objectLabel)}</span><span class='interaction-value'>${escapeHtml(interaction.object)}</span></div>`
           : "",
         interaction.legal_basis
-          ? `<span class='interaction-key'>${escapeHtml(copy.legalBasisLabel)}</span><span class='interaction-value'>${escapeHtml(localizeLegalBasis(interaction.legal_basis, language))}</span>`
+          ? `<div class='interaction-row'><span class='interaction-key'>${escapeHtml(copy.legalBasisLabel)}</span><span class='interaction-value'>${escapeHtml(localizeLegalBasis(interaction.legal_basis, language))}</span></div>`
           : ""
       ]
         .filter(Boolean)
@@ -272,16 +272,29 @@ export function MermaidDiagram({ data, activePhaseIndex, mode, language }: Merma
       return;
     }
 
+    const printStyles = `
+      body { margin: 0; padding: 24px; font-family: "Pretendard Variable", "Noto Sans KR", "Noto Sans", Arial, sans-serif; background: #ffffff; color: #0f172a; }
+      .frame { border: 1px solid #d1d5db; border-radius: 20px; padding: 24px; overflow: visible; }
+      svg { display: block; width: auto; max-width: 100%; height: auto; }
+      .flowchart-link { stroke-linecap: round; stroke-linejoin: round; }
+      .label text, .edgeLabel { font-family: "Pretendard Variable", "Noto Sans KR", "Noto Sans", Arial, sans-serif; }
+      .edgeLabel { display: block; font-size: 12px; line-height: 1.35; color: #172033; }
+      .edgeLabel rect { fill: rgba(255, 252, 245, 0.98) !important; stroke: rgba(148, 163, 184, 0.55) !important; stroke-width: 1px !important; rx: 12px; ry: 12px; }
+      .interaction-label { display: table; width: 248px; table-layout: fixed; }
+      .interaction-action { display: block; margin-bottom: 8px; font-size: 12px; font-weight: 800; text-align: center; white-space: normal !important; overflow-wrap: anywhere; word-break: break-word; }
+      .interaction-meta { display: table; width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 0; }
+      .interaction-row { display: table-row; }
+      .interaction-key, .interaction-value { display: table-cell; vertical-align: top; padding: 4px 0; font-size: 11.5px; white-space: normal !important; overflow-wrap: anywhere; word-break: break-word; }
+      .interaction-key { width: 82px; padding-right: 10px; font-weight: 700; color: #475569; }
+      .interaction-value { font-weight: 600; color: #172033; }
+      @media print { body { padding: 0; } .frame { border: 0; padding: 0; } }
+    `;
+
     printWindow.document.write(`
       <html>
         <head>
           <title>${copy.printMap}</title>
-          <style>
-            body { margin: 0; padding: 24px; font-family: Arial, sans-serif; background: #ffffff; }
-            .frame { border: 1px solid #d1d5db; border-radius: 20px; padding: 24px; }
-            svg { width: 100%; height: auto; }
-            @media print { body { padding: 0; } .frame { border: 0; padding: 0; } }
-          </style>
+          <style>${printStyles}</style>
         </head>
         <body>
           <div class="frame">${svg}</div>
@@ -289,8 +302,17 @@ export function MermaidDiagram({ data, activePhaseIndex, mode, language }: Merma
       </html>
     `);
     printWindow.document.close();
-    printWindow.focus();
-    printWindow.print();
+    const triggerPrint = () => {
+      printWindow.focus();
+      printWindow.requestAnimationFrame(() => {
+        printWindow.requestAnimationFrame(() => {
+          printWindow.print();
+        });
+      });
+    };
+
+    printWindow.onload = triggerPrint;
+    window.setTimeout(triggerPrint, 300);
   };
 
   return (
@@ -351,8 +373,7 @@ export function MermaidDiagram({ data, activePhaseIndex, mode, language }: Merma
               <div
                 className="zoom-stage"
                 style={{
-                  width: `${Math.max(zoomPercent, 1)}%`,
-                  minWidth: zoomPercent === 0 ? "0%" : `${Math.max(zoomPercent, 1)}%`,
+                  transform: `scale(${Math.max(zoomPercent, 1) / 100})`,
                   opacity: zoomPercent === 0 ? 0 : 1
                 }}
               >
