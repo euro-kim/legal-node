@@ -7,7 +7,11 @@ mermaid.initialize({
   startOnLoad: false,
   theme: "neutral",
   flowchart: {
-    curve: "cardinal"
+    curve: "monotoneX",
+    nodeSpacing: 48,
+    rankSpacing: 72,
+    padding: 20,
+    useMaxWidth: false
   }
 });
 
@@ -37,10 +41,10 @@ function colorFromId(id: string) {
     hash |= 0;
   }
 
-  const hue = Math.abs(hash) % 360;
+  const hue = Math.abs(hash) % 24;
+  const hueOffset = hue - 12;
   return {
-    fill: hslToHex(hue, 72, 90),
-    stroke: hslToHex(hue, 52, 38)
+    hueOffset
   };
 }
 
@@ -103,6 +107,42 @@ function typeClassName(type: EntityType) {
   return `type-${type.toLowerCase()}`;
 }
 
+function typePalette(type: EntityType, hueOffset: number) {
+  switch (type) {
+    case "Person":
+      return {
+        fill: hslToHex(214 + hueOffset, 84, 90),
+        stroke: hslToHex(217 + hueOffset, 72, 40),
+        edge: "#2563eb"
+      };
+    case "Company":
+      return {
+        fill: hslToHex(154 + hueOffset, 58, 90),
+        stroke: hslToHex(160 + hueOffset, 64, 32),
+        edge: "#0f766e"
+      };
+    case "Organization":
+      return {
+        fill: hslToHex(38 + hueOffset, 88, 89),
+        stroke: hslToHex(26 + hueOffset, 78, 36),
+        edge: "#d97706"
+      };
+    case "Object":
+      return {
+        fill: hslToHex(272 + hueOffset, 70, 92),
+        stroke: hslToHex(270 + hueOffset, 66, 42),
+        edge: "#7c3aed"
+      };
+    case "Other":
+    default:
+      return {
+        fill: hslToHex(212 + hueOffset, 24, 93),
+        stroke: hslToHex(214 + hueOffset, 22, 36),
+        edge: "#475569"
+      };
+  }
+}
+
 function buildDiagram(
   data: LegalMapResult,
   activePhaseIndex: number,
@@ -114,21 +154,41 @@ function buildDiagram(
   const copy = translations[language];
   const lines = [
     "flowchart LR",
+    "  classDef anchor fill:transparent,stroke:transparent,color:transparent;",
     "  classDef type-person stroke-width:3px;",
     "  classDef type-company stroke-width:3px,stroke-dasharray: 0;",
     "  classDef type-organization stroke-width:3px,stroke-dasharray: 8 4;",
     "  classDef type-object stroke-width:3px;",
     "  classDef type-other stroke-width:2.5px,stroke-dasharray: 3 3;"
   ];
-  let edgeCount = 0;
+  let linkIndex = 0;
+
+  const linkStyles: string[] = [];
+  const pushLinkStyle = (style: string) => {
+    linkStyles.push(`  linkStyle ${linkIndex} ${style}`);
+    linkIndex += 1;
+  };
+
+  lines.push('  subgraph entityLane[" "]');
+  lines.push("    direction LR");
 
   for (const entity of data.entities) {
     const label = escapeLabel(`${entity.name}\\n(${localizeEntityType(entity.type, language)})`);
-    const colors = colorFromId(entity.id);
-    lines.push(`  ${entityNode(entity, label)}`);
-    lines.push(`  style ${entity.id} fill:${colors.fill},stroke:${colors.stroke},stroke-width:3px,color:#111827;`);
+    const colors = typePalette(entity.type, colorFromId(entity.id).hueOffset);
+    lines.push(`    ${entityNode(entity, label)}`);
+    lines.push(`  style ${entity.id} fill:${colors.fill},stroke:${colors.stroke},stroke-width:3px,color:#0f172a;`);
     lines.push(`  class ${entity.id} ${typeClassName(entity.type)};`);
   }
+
+  for (let index = 0; index < data.entities.length - 1; index += 1) {
+    const currentEntity = data.entities[index];
+    const nextEntity = data.entities[index + 1];
+    lines.push(`    ${currentEntity.id} --- ${nextEntity.id}`);
+    pushLinkStyle("stroke:transparent,stroke-width:0,fill:none;");
+  }
+
+  lines.push("  end");
+  lines.push("  style entityLane fill:transparent,stroke:transparent;");
 
   visiblePhases.forEach((phase) => {
     phase.interactions.forEach((interaction) => {
@@ -149,14 +209,14 @@ function buildDiagram(
         .join("<br/>");
 
       lines.push(`  ${interaction.from} -->|"${escapeLabel(edgeLabel)}"| ${interaction.to}`);
-      lines.push(
-        `  linkStyle ${edgeCount} stroke:${mode === "single" ? "#0f766e" : "#2563eb"},stroke-width:2.5px,opacity:0.9;`
-      );
-      edgeCount += 1;
+      const fromColors = typePalette(from.type, colorFromId(from.id).hueOffset);
+      const toColors = typePalette(to.type, colorFromId(to.id).hueOffset);
+      const edgeColor = mode === "single" ? fromColors.edge : toColors.edge;
+      pushLinkStyle(`stroke:${edgeColor},stroke-width:2.75px,opacity:0.96;`);
     });
   });
 
-  return lines.join("\n");
+  return [...lines, ...linkStyles].join("\n");
 }
 
 export function MermaidDiagram({ data, activePhaseIndex, mode, language }: MermaidDiagramProps) {
@@ -247,7 +307,9 @@ export function MermaidDiagram({ data, activePhaseIndex, mode, language }: Merma
             {copy.printMap}
           </button>
         </div>
-        <div className="diagram-shell" dangerouslySetInnerHTML={{ __html: svg }} />
+        <div className="diagram-shell">
+          <div className="diagram-canvas" dangerouslySetInnerHTML={{ __html: svg }} />
+        </div>
       </div>
 
       {isExpanded ? (
@@ -288,8 +350,9 @@ export function MermaidDiagram({ data, activePhaseIndex, mode, language }: Merma
                   minWidth: zoomPercent === 0 ? "0%" : `${Math.max(zoomPercent, 1)}%`,
                   opacity: zoomPercent === 0 ? 0 : 1
                 }}
-                dangerouslySetInnerHTML={{ __html: svg }}
-              />
+              >
+                <div className="diagram-canvas" dangerouslySetInnerHTML={{ __html: svg }} />
+              </div>
             </div>
           </div>
         </div>

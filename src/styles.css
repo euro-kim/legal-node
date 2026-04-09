@@ -453,32 +453,74 @@ textarea {
   transform-origin: top left;
 }
 
-.zoom-stage svg {
-  width: 100%;
-  height: auto;
-}
-
 .diagram-shell,
 .empty-state {
   min-height: 560px;
   padding: 20px;
   background: var(--diagram-bg);
   border: 1px solid var(--panel-border);
-  overflow: auto;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 .diagram-shell.expanded {
   min-height: min(78vh, 920px);
 }
 
-.diagram-shell svg {
+.diagram-canvas {
+  width: max-content;
   min-width: 100%;
+}
+
+.zoom-stage {
+  width: max-content;
+}
+
+.diagram-shell svg,
+.zoom-stage svg {
+  display: block;
+  width: auto;
   height: auto;
+  min-width: 100%;
 }
 
 .diagram-shell .label text,
 .diagram-shell .edgeLabel {
   font-family: "Pretendard Variable", "Noto Sans KR", "Noto Sans", sans-serif;
+}
+
+.diagram-shell .flowchart-link,
+.zoom-stage .flowchart-link {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.diagram-shell .edgeLabel,
+.zoom-stage .edgeLabel {
+  background: rgba(255, 252, 245, 0.92);
+  color: #172033;
+  padding: 4px 6px;
+  border-radius: 10px;
+}
+
+.diagram-shell .edgeLabel rect,
+.zoom-stage .edgeLabel rect {
+  fill: rgba(255, 252, 245, 0.94) !important;
+  stroke: rgba(148, 163, 184, 0.35) !important;
+  rx: 10px;
+  ry: 10px;
+}
+
+.diagram-shell .nodeLabel,
+.zoom-stage .nodeLabel {
+  color: #0f172a !important;
+  font-weight: 600;
+}
+
+.diagram-shell .cluster rect,
+.zoom-stage .cluster rect {
+  fill: transparent !important;
+  stroke: transparent !important;
 }
 
 .empty-state {
